@@ -1,30 +1,35 @@
 import json
 
-def add_food(foods):
-    while True:
-        food_name = input("Enter the name of the food: ")
-        if food_name == "":
-            print("\nFood name cannot be empty. Please enter a valid name.")
-            continue
-        else:
-            break
+def invalid_calorie(calories):
+    if calories <= 0 or calories > 10000:
+        return True
+    return False
 
+def invalid_protein(protein):
+    if protein < 0 or protein > 400:
+        return True
+    return False
+
+def get_valid_calories(prompt):
     while True:
         try:
-            calories = float(input("Enter the number of calories: "))
-            if calories <= 0 or calories > 10000:
-                print("Calories cannot be zero or negative or exceed 10000. Please enter a valid number.")
+            calories = float(input(prompt))
+    
+            if invalid_calorie(calories):
+                print("Calories cannot be less than zero or negative or exceed 10000.")
                 continue
             else:
                 break
         except ValueError:
             print("Invalid input. Please enter numeric values for calories.")
             continue
+    return calories
 
+def get_valid_protein(prompt):
     while True:
         try:
-            protein = float(input("Enter the amount of protein (in grams): "))
-            if protein < 0 or protein > 400:
+            protein = float(input(prompt))
+            if invalid_protein(protein):
                 print("Protein cannot be negative or exceed 400. Please enter a valid number.")
                 continue
             else:
@@ -32,6 +37,22 @@ def add_food(foods):
         except ValueError:
             print("Invalid input. Please enter numeric values for protein.")
             continue
+    return protein
+
+
+def add_food(foods):
+    while True:
+        food_name = input("Enter the name of the food: ").strip()
+
+        if food_name == "":
+            print("\nFood name cannot be empty. Please enter a valid name.")
+            continue
+        else:
+            break
+
+    calories = get_valid_calories("Enter the number of calories: ")
+    protein = get_valid_protein("Enter the amount of protein (in grams): ")
+
     
     food = {
             "name": food_name,
@@ -73,6 +94,88 @@ def load_foods():
     except FileNotFoundError:
         return []
 
+def update_food_name(food_to_update):
+    while True:
+            
+            new_name = input(f"Enter the new name for '{food_to_update['name']}' (or press Enter to keep it the same): ").strip()
+            if new_name == "":
+                new_name = food_to_update['name']
+                break
+            else:
+                print(f"\nFood name updated to: {new_name}")
+                food_to_update['name'] = new_name
+                break     
+
+def display_food_choices(foods):
+    while True:
+        print("   \nYour Foods:   \n")
+        print("0. Return to main menu")
+
+        for number, food in enumerate(foods, start=1):
+            print(f"{number}. {food['name']}")
+
+        try:
+            choice = int(input("\nChoose a food to update: "))
+            if choice == 0:
+                return None
+            if choice < 0 or choice > len(foods):
+                print("\nInvalid choice. Please enter a valid number.")
+                continue
+        except ValueError:
+            print("\nInvalid input. Please enter a number.")
+            continue
+
+        if choice >= 1 and choice <= len(foods):
+            food_to_update = foods[choice - 1]
+            return food_to_update
+
+
+def update_food(foods):
+    if not foods:
+        print("\nNo foods have been added yet.")
+        return
+
+    food_to_update = display_food_choices(foods)
+
+    if food_to_update == None:
+        return None
+
+    update_food_name(food_to_update)
+
+    print(f"\nCurrent calories: {food_to_update['calories']} kcal")
+    new_calories = get_valid_calories(f"Enter the new calorie count for '{food_to_update['name']}' (or press Enter to keep it the same): ")
+    food_to_update['calories'] = new_calories
+
+    print(f"\nCurrent protein: {food_to_update['protein']} g")
+    new_protein = get_valid_protein(f"Enter the new protein count for {food_to_update['name']}: ")
+    food_to_update['protein'] = new_protein
+
+
+def delete_food(foods): 
+    while True:
+        print("\nYour Foods:   \n")
+        print("0. Return to main menu")
+        for number, food in enumerate(foods, start=1):
+            print(f"{number}. {food['name']}")
+
+        try:
+            choice = int(input("\nChoose a food to delete "))
+            if choice == 0:
+                break
+            if not foods:
+                print("\nNo foods have been added yet.")
+                return
+            if choice < 0 or choice > len(foods):
+                print("\nInvalid choice. Please enter a valid number.")
+                continue
+            if choice >= 1 and choice <= len(foods):
+                deleted_food = foods[choice - 1]
+                del foods[choice - 1]
+                print(f"\n{deleted_food['name']} has been deleted.")
+                break
+        except ValueError:
+            print("Invalid input. Please enter a number.")
+            continue
 def main():
 
     foods = load_foods()
@@ -82,9 +185,11 @@ def main():
          print("    Food Tracker!   ")
          print("================================\n")
          print("1. Add Food")
-         print("2. View Foods")
-         print("3. Calculate Total Calories and Protein")
-         print("4. Exit\n")
+         print("2. Update Food")
+         print("3. View Foods")
+         print("4. Delete Food")
+         print("5. Calculate Total Calories and Protein")
+         print("6. Exit\n")
          print("--------------------------------")
 
          try:
@@ -92,6 +197,7 @@ def main():
          except ValueError:
              print("Invalid input. Please enter a number.")
              continue
+         print("\n")
 
 
          if choice == 1:
@@ -100,19 +206,29 @@ def main():
              save_foods(foods)
              input(f"\nPress Enter to return to the main menu...")
 
-            
          elif choice == 2:
+             
+             update_food(foods)
+             save_foods(foods)
+             input(f"\nFood has been updated. Press Enter to return to the main menu...")
+
+            
+         elif choice == 3:
             view_foods(foods)
             input(f"\nPress Enter to return to the main menu...")
 
-         elif choice == 3:
+         elif choice == 4:
+             delete_food(foods)
+             save_foods(foods)
+             input(f"\nPress Enter to return to the main menu...")
+
+         elif choice == 5:
             total_calories, total_protein = calculate_totals(foods)
             print(f"\nTotal calories: {total_calories} kcal")
             print(f"Total protein: {total_protein} g")
             input(f"\nPress Enter to return to the main menu...")
 
-         elif choice == 4:
-            save_foods(foods)
+         elif choice == 6:
             break
          
          else:
