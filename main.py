@@ -1,14 +1,10 @@
 import json
 
 def invalid_calorie(calories):
-    if calories <= 0 or calories > 10000:
-        return True
-    return False
+    return calories <= 0 or calories > 10000
 
 def invalid_protein(protein):
-    if protein < 0 or protein > 400:
-        return True
-    return False
+    return protein < 0 or protein > 400
 
 def get_valid_calories(prompt):
     while True:
@@ -132,18 +128,18 @@ def display_food_choices(foods):
 
 def update_food(foods):
     if not foods:
-        print("\nNo foods have been added yet.")
+        print("No foods have been added yet.\n")
         return
 
     food_to_update = display_food_choices(foods)
 
-    if food_to_update == None:
-        return None
+    if food_to_update is None:
+        return 
 
     update_food_name(food_to_update)
 
     print(f"\nCurrent calories: {food_to_update['calories']} kcal")
-    new_calories = get_valid_calories(f"Enter the new calorie count for '{food_to_update['name']}' (or press Enter to keep it the same): ")
+    new_calories = get_valid_calories(f"Enter the new calorie count for '{food_to_update['name']}': ")
     food_to_update['calories'] = new_calories
 
     print(f"\nCurrent protein: {food_to_update['protein']} g")
@@ -154,17 +150,20 @@ def update_food(foods):
 def delete_food(foods): 
     while True:
         print("\nYour Foods:   \n")
+
+        if not foods:
+            print("No foods have been added yet.")
+            return
+        
         print("0. Return to main menu")
+
         for number, food in enumerate(foods, start=1):
             print(f"{number}. {food['name']}")
-
+            
         try:
-            choice = int(input("\nChoose a food to delete "))
+            choice = int(input("\nChoose a food to delete: "))
             if choice == 0:
                 break
-            if not foods:
-                print("\nNo foods have been added yet.")
-                return
             if choice < 0 or choice > len(foods):
                 print("\nInvalid choice. Please enter a valid number.")
                 continue
@@ -207,10 +206,12 @@ def main():
              input(f"\nPress Enter to return to the main menu...")
 
          elif choice == 2:
-             
-             update_food(foods)
-             save_foods(foods)
-             input(f"\nFood has been updated. Press Enter to return to the main menu...")
+
+             if update_food(foods) == None:
+                 input("Press Enter to return to the main menu...\n")
+             else:
+                 input(f"\nFood has been updated. Press Enter to return to the main menu...")
+                 save_foods(foods)
 
             
          elif choice == 3:
