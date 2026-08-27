@@ -48,12 +48,14 @@ def add_food(foods):
 
     calories = get_valid_calories("Enter the number of calories: ")
     protein = get_valid_protein("Enter the amount of protein (in grams): ")
+    serving_size = int(input("Enter the serving size: "))
 
     
     food = {
             "name": food_name,
             "calories": calories,
-            "protein": protein
+            "protein": protein,
+            "serving_size": serving_size
             }
 
     foods.append(food)
@@ -67,6 +69,7 @@ def view_foods(foods):
          print(f"Food Name: {food['name']}")
          print(f"Calories: {food['calories']} kcal")
          print(f"Protein: {food['protein']} g")
+         print(f"Servings: {food['serving_size']} g")
          print("------------------------")
 
 def calculate_totals(foods):
