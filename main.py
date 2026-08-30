@@ -6,6 +6,9 @@ def invalid_calorie(calories):
 def invalid_protein(protein):
     return protein < 0 or protein > 400
 
+def invalid_serving(serving):
+    return serving < 0 or serving > 500
+
 def get_valid_calories(prompt):
     while True:
         try:
@@ -35,6 +38,20 @@ def get_valid_protein(prompt):
             continue
     return protein
 
+def get_valid_serving(prompt):
+    while True:
+        try:
+            serving = float(input(prompt))
+            if invalid_serving(serving):
+                print("Serving cannot be negative or exceed 500. Please enter a valid number.")
+                continue
+            else:
+                break
+        except ValueError:
+            print("Invalid input. Please enter numeric values for protein.")
+            continue
+    return serving
+
 
 def add_food(foods):
     while True:
@@ -48,7 +65,7 @@ def add_food(foods):
 
     calories = get_valid_calories("Enter the number of calories: ")
     protein = get_valid_protein("Enter the amount of protein (in grams): ")
-    serving_size = float(input("Enter the serving size: "))
+    serving_size = get_valid_serving("Enter the serving size: ")
 
     
     food = {
@@ -180,19 +197,28 @@ def delete_food(foods):
             print("Invalid input. Please enter a number.")
             continue
 
-def log_to_entry(food_to_log):
-    servings = float(input(f"How many grams of {[food_to_log['name']]} did you eat? "))
-
+def get_amount(food_to_log):
+        servings = get_valid_serving(f"How many grams of {food_to_log['name']} did you eat? ")
+        return servings
 
 def log_food(foods, food_entries):
-    food_to_log = display_food_choices(foods)
+    while True:
+        food_to_log = display_food_choices(foods)
 
-    log_to_entry = log_to_entry(food_to_log)
+        if food_to_log is None:
+            return
+        
+        amount = get_amount(food_to_log)
+        food_name = food_to_log['name']
 
-    if food_to_log is None:
-        return
 
-    
+        food_entry = {
+            "name": food_name,
+            "servings": amount
+            }
+
+        food_entries.append(food_entry)
+
   
 def main():
 
