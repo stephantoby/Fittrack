@@ -48,7 +48,7 @@ def add_food(foods):
 
     calories = get_valid_calories("Enter the number of calories: ")
     protein = get_valid_protein("Enter the amount of protein (in grams): ")
-    serving_size = int(input("Enter the serving size: "))
+    serving_size = float(input("Enter the serving size: "))
 
     
     food = {
@@ -136,6 +136,7 @@ def update_food(foods):
 
     food_to_update = display_food_choices(foods)
 
+
     if food_to_update is None:
         return 
 
@@ -178,9 +179,25 @@ def delete_food(foods):
         except ValueError:
             print("Invalid input. Please enter a number.")
             continue
+
+def log_to_entry(food_to_log):
+    servings = float(input(f"How many grams of {[food_to_log['name']]} did you eat? "))
+
+
+def log_food(foods, food_entries):
+    food_to_log = display_food_choices(foods)
+
+    log_to_entry = log_to_entry(food_to_log)
+
+    if food_to_log is None:
+        return
+
+    
+  
 def main():
 
     foods = load_foods()
+    food_entries = []
 
     while True:
          print("================================")
@@ -190,8 +207,10 @@ def main():
          print("2. Update Food")
          print("3. View Foods")
          print("4. Delete Food")
-         print("5. Calculate Total Calories and Protein")
-         print("6. Exit\n")
+         print("5. Log Foods")
+         print("6. View Food Log")
+         print("7. Calculate Total Calories and Protein")
+         print("8. Exit\n")
          print("--------------------------------")
 
          try:
@@ -226,13 +245,16 @@ def main():
              save_foods(foods)
              input(f"\nPress Enter to return to the main menu...")
 
-         elif choice == 5:
+         elif  choice == 5:
+             log_food(foods, food_entries)
+
+         elif choice == 7:
             total_calories, total_protein = calculate_totals(foods)
             print(f"\nTotal calories: {total_calories} kcal")
             print(f"Total protein: {total_protein} g")
             input(f"\nPress Enter to return to the main menu...")
 
-         elif choice == 6:
+         elif choice == 8:
             break
          
          else:
