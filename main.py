@@ -41,8 +41,8 @@ def get_valid_protein(prompt):
 def get_valid_serving(prompt):
     while True:
         try:
-            serving = float(input(prompt))
-            if invalid_serving(serving):
+            amount = float(input(prompt))
+            if invalid_serving(amount):
                 print("Serving cannot be negative or exceed 500. Please enter a valid number.")
                 continue
             else:
@@ -50,7 +50,7 @@ def get_valid_serving(prompt):
         except ValueError:
             print("Invalid input. Please enter numeric values for protein.")
             continue
-    return serving
+    return amount
 
 
 def add_food(foods):
@@ -131,7 +131,7 @@ def display_food_choices(foods):
             print(f"{number}. {food['name']}")
 
         try:
-            choice = int(input("\nChoose a food to update: "))
+            choice = int(input("\nChoose a food: "))
             if choice == 0:
                 return None
             if choice < 0 or choice > len(foods):
@@ -198,11 +198,17 @@ def delete_food(foods):
             continue
 
 def get_amount(food_to_log):
-        servings = get_valid_serving(f"How many grams of {food_to_log['name']} did you eat? ")
-        return servings
+        amount = get_valid_serving(f"\nHow many grams of {food_to_log['name']} did you eat? ")
+        return amount
+
+def calculate_entry_nutrition(food_to_log, amount):
+    calories = (food_to_log['calories'] * amount ) / food_to_log['serving_size']
+    protein = (food_to_log['protein'] * amount ) / food_to_log['serving_size']
+
+    return (calories, protein)
 
 def log_food(foods, food_entries):
-    while True:
+    
         food_to_log = display_food_choices(foods)
 
         if food_to_log is None:
@@ -214,16 +220,36 @@ def log_food(foods, food_entries):
 
         food_entry = {
             "name": food_name,
-            "servings": amount
+            "amount_grams": amount
             }
 
         food_entries.append(food_entry)
+
+        input("\nPress enter to calculate actual calories and protein")
+
+        actual_calories, actual_protein = calculate_entry_nutrition(food_to_log, amount)
+
+        print(f"{food_name}")
+        print(f"Calories: {actual_calories} Kcal")
+        print(f"Protein: {actual_protein} g")
+
+    
+def save_log(food_entries):
+    with open("food_logs.json", "w") as file:
+        json.dump(food_entries, file)
+
+def load_log():
+    try:
+        with open("food_logs.json", "r") as file:
+            return json.load(file)
+    except FileNotFoundError:
+        return []
 
   
 def main():
 
     foods = load_foods()
-    food_entries = []
+    food_entries = load_log()
 
     while True:
          print("================================")
@@ -273,6 +299,7 @@ def main():
 
          elif  choice == 5:
              log_food(foods, food_entries)
+             save_log(food_entries)
 
          elif choice == 7:
             total_calories, total_protein = calculate_totals(foods)
