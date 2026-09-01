@@ -217,21 +217,36 @@ def log_food(foods, food_entries):
         amount = get_amount(food_to_log)
         food_name = food_to_log['name']
 
-
-        food_entry = {
-            "name": food_name,
-            "amount_grams": amount
-            }
-
-        food_entries.append(food_entry)
-
-        input("\nPress enter to calculate actual calories and protein")
-
         actual_calories, actual_protein = calculate_entry_nutrition(food_to_log, amount)
 
         print(f"{food_name}")
         print(f"Calories: {actual_calories} Kcal")
         print(f"Protein: {actual_protein} g")
+
+        input("\nPress enter to continue...")
+
+        food_entry = {
+            "name": food_name,
+            "amount_grams": amount,
+            "calories": actual_calories,
+            "protein": actual_protein
+            }
+        
+        food_entries.append(food_entry)
+
+def view_food_log(food_entries):
+    if not food_entries:
+        print("\nNo foods have been added yet.")
+        return
+   
+    for number, food in enumerate(food_entries, start= 1):
+        print(f"{number}.")
+        print(f"{food['name']}")
+        print(f"Amount: {food['amount_grams']} g")
+        print(f"Calories: {food['calories']} kcal")
+        print(f"Protein: {food['protein']} g")
+        print("------------------------")
+
 
     
 def save_log(food_entries):
@@ -244,6 +259,8 @@ def load_log():
             return json.load(file)
     except FileNotFoundError:
         return []
+
+
 
   
 def main():
@@ -300,6 +317,9 @@ def main():
          elif  choice == 5:
              log_food(foods, food_entries)
              save_log(food_entries)
+
+         elif choice == 6:
+             view_food_log(food_entries)
 
          elif choice == 7:
             total_calories, total_protein = calculate_totals(foods)
