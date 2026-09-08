@@ -48,7 +48,7 @@ def get_valid_serving(prompt):
             else:
                 break
         except ValueError:
-            print("Invalid input. Please enter numeric values for protein.")
+            print("Invalid input. Please enter numeric values for serving size.")
             continue
     return amount
 
@@ -262,7 +262,7 @@ def load_log():
     except FileNotFoundError:
         return []
 
-def update_entry(foods_entries):
+def update_entry(foods_entries, foods):
     if not foods_entries:
         print("No foods have been added yet.\n")
         return
@@ -272,15 +272,28 @@ def update_entry(foods_entries):
     if food_to_update is None:
         return 
 
-    update_food_name(food_to_update)
+    print(f"\nYou have selected: {food_to_update['name']} - {food_to_update['amount_grams']} g")
 
-    print(f"\nCurrent calories: {food_to_update['calories']} kcal")
-    new_calories = get_valid_calories(f"Enter the new calorie count for '{food_to_update['name']}': ")
-    food_to_update['calories'] = new_calories
+    input(f"\nPress Enter to update the details")
 
-    print(f"\nCurrent protein: {food_to_update['protein']} g")
-    new_protein = get_valid_protein(f"Enter the new protein count for {food_to_update['name']}: ")
-    food_to_update['protein'] = new_protein
+    for food in foods:
+        if food['name'] == food_to_update['name']:
+            original_food = food
+            break
+
+    if not original_food:
+        print("Food not found in the list.")
+        return
+
+    print(f"\nCurrent amount served: {food_to_update['amount_grams']} g")
+    new_amount = get_valid_serving(f"Enter the new amount for '{food_to_update['name']}': ")
+    food_to_update['amount_grams'] = new_amount
+
+    calories, protein = calculate_entry_nutrition(original_food, new_amount)
+    food_to_update['calories'] = calories
+    food_to_update['protein'] = protein
+
+    input(f"\nFood entry has been updated. Press Enter to return to the main menu...")
 
 def delete_food(food_entries): 
     while True:
@@ -382,7 +395,7 @@ def main():
             input(f"\nPress Enter to return to the main menu...")
 
          elif choice == 8:
-             update_entry(food_entries)
+             update_entry(food_entries,foods)
              save_log(food_entries)
 
          elif choice == 9:
