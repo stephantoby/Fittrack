@@ -276,12 +276,14 @@ def update_entry(foods_entries, foods):
 
     input(f"\nPress Enter to update the details")
 
+    original_food = None
+
     for food in foods:
         if food['name'] == food_to_update['name']:
             original_food = food
             break
 
-    if not original_food:
+    if original_food is None:
         print("Food not found in the list.")
         return
 
@@ -339,11 +341,7 @@ def main():
          print("3. View Foods")
          print("4. Delete Food")
          print("5. Log Foods")
-         print("6. View Food Log")
-         print("7. Calculate Total Calories and Protein in log")
-         print("8. Update Food Entries")
-         print("9. Delete Food Entries")
-         print("10. Exit\n")
+         print("6. Exit\n")
          print("--------------------------------")
 
          try:
@@ -379,30 +377,91 @@ def main():
              input(f"\nPress Enter to return to the main menu...")
 
          elif  choice == 5:
-             log_food(foods, food_entries)
-             save_log(food_entries)
+             while True:
+                print("================================")
+                print("        Food Log Menu!      ")
+                print("================================\n")
+                print("1. Add Food Log")
+                print("2. View Food Log")
+                print("3. Calculate Daily Calories and Protein")
+                print("4. Update Food Entries")
+                print("5. Delete Food Entries")
+                print("6. Return to Main Menu\n")
 
+                try:
+                    choice = int(input("Choose an option: "))
+                except ValueError:
+                    print("Invalid input. Please enter a number.")
+                    continue
+                print("\n")
+
+                if choice == 1:
+                    log_food(foods, food_entries)
+                    save_log(food_entries)
+                elif choice == 2:
+                    view_food_log(food_entries)
+                
+                elif choice == 3:
+                   while True:
+                       print("================================")
+                       print("        Daily Totals!      ")
+                       print("================================\n")
+                       print("1. Calculate Daily Calories and Protein")
+                       print("2. Add Daily calorie goal and protein goal")
+                       print("3. Return\n")
+
+                       try:
+                           choice = int(input("Choose an option: "))
+                       except ValueError:
+                           print("Invalid input. Please enter a number.")
+                           continue
+                       print("\n")
+                       
+                       if choice == 1:
+                           total_calories, total_protein = calculate_totals(food_entries)
+                           print("========Daily Totals========")
+                           print(f"\nCalories: {total_calories} kcal")
+                           print(f"Protein: {total_protein} g")
+                           print(f"Foods Logged: {len(food_entries)}")
+                           print("--------------------------------")
+                           input(f"\nPress Enter to return to the main menu...")
+                           
+                       elif choice == 2:
+                            daily_calorie_goal = get_valid_calories("Enter your daily calorie goal: ")
+                            daily_protein_goal = get_valid_protein("Enter your daily protein goal: ")
+    
+                            total_calories, total_protein = calculate_totals(food_entries)
+    
+                            print("\n========Daily Totals========")
+                            print(f"\nCalories: {total_calories} kcal / Goal: {daily_calorie_goal} kcal")
+                            print(f"Protein: {total_protein} g / Goal: {daily_protein_goal} g")
+                            print(f"Foods Logged: {len(food_entries)}")
+                            print("--------------------------------")
+                            print(f"\nCalories remaining: {daily_calorie_goal - total_calories}")
+                            print(f"Protein remaining: {daily_protein_goal - total_protein}")
+                            input(f"\nPress Enter to return to the main menu...")
+
+                       elif choice == 3:
+                            break
+                       else:
+                            print("Invalid choice. Please try again.")                               
+                        
+                elif choice == 4:
+                    update_entry(food_entries,foods)
+                    save_log(food_entries)
+                
+                elif choice == 5:
+                    delete_food(food_entries)
+                    save_log(food_entries)
+
+                elif choice == 6:
+                    break
+
+                else:
+                    print("Invalid choice. Please try again.")
+
+    
          elif choice == 6:
-             view_food_log(food_entries)
-
-         elif choice == 7:
-            total_calories, total_protein = calculate_totals(food_entries)
-
-            print("========Daily Totals========")
-            print(f"\nCalories: {total_calories} kcal")
-            print(f"Protein: {total_protein} g")
-            print("--------------------------------")
-            input(f"\nPress Enter to return to the main menu...")
-
-         elif choice == 8:
-             update_entry(food_entries,foods)
-             save_log(food_entries)
-
-         elif choice == 9:
-             delete_food(food_entries)
-             save_log(food_entries)
-
-         elif choice == 10:
             break
          
          else:
