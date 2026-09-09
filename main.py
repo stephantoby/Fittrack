@@ -326,11 +326,37 @@ def delete_food(food_entries):
             print("Invalid input. Please enter a number.")
             continue
 
+def save_goals(Daily_goals):
+    with open("Daily_goals.json", "w") as file:
+        json.dump(Daily_goals, file)
+
+def load_goals():
+    try:
+        with open("Daily_goals.json", "r") as file:
+            return json.load(file)
+    except FileNotFoundError:
+        return []
+
+def view_goals(daily_goals):
+    if not daily_goals:
+        print("\nNo daily goals have been set yet.")
+        return
+    
+    print("================================")
+    print("          Daily Goals!       ")
+    print("================================\n")
+
+    for number, goal in enumerate(daily_goals, start= 1):
+        print(f"{number}.")
+        print(f"Daily Calorie Goal: {goal['daily_calorie_goal']} kcal")
+        print(f"Daily Protein Goal: {goal['daily_protein_goal']} g")
+        print("-----------------------------")
   
 def main():
 
     foods = load_foods()
     food_entries = load_log()
+    daily_goals = load_goals()
 
     while True:
          print("================================")
@@ -408,7 +434,8 @@ def main():
                        print("================================\n")
                        print("1. Calculate Daily Calories and Protein")
                        print("2. Add Daily calorie goal and protein goal")
-                       print("3. Return\n")
+                       print("3. View Daily Totals with Goals")
+                       print("4. Return\n")
 
                        try:
                            choice = int(input("Choose an option: "))
@@ -441,7 +468,18 @@ def main():
                             print(f"Protein remaining: {daily_protein_goal - total_protein}")
                             input(f"\nPress Enter to return to the main menu...")
 
+                            daily_goal = {
+                                "daily_calorie_goal": daily_calorie_goal,
+                                "daily_protein_goal": daily_protein_goal
+                            }
+
+                            daily_goals.append(daily_goal)
+                            save_goals(daily_goals)
+
                        elif choice == 3:
+                           view_goals(daily_goals)
+
+                       elif choice == 4:
                             break
                        else:
                             print("Invalid choice. Please try again.")                               
