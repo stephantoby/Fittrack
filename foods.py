@@ -33,7 +33,7 @@ def view_foods():
         cursor.execute('''
         SELECT name, calories, protein, serving_size FROM foods
         ''')
-        
+
         foods = cursor.fetchall()
         for food in foods:
          print(f"Food Name: {food[0]}")
@@ -42,12 +42,13 @@ def view_foods():
          print(f"Servings: {food[3]} g")
          print("------------------------")
 
+
 def update_food_name(food_to_update):
     while True:
             
-            new_name = input(f"Enter the new name for '{food_to_update['name']}' (or press Enter to keep it the same): ").strip()
+            new_name = input(f"Enter the new name for '{food_to_update[1]}' (or press Enter to keep it the same): ").strip()
             if new_name == "":
-                new_name = food_to_update['name']
+                new_name = food_to_update[1]
                 break
             else:
                 print(f"\nFood name updated to: {new_name}")
@@ -60,7 +61,7 @@ def display_food_choices(food_list):
         print("0. Return to main menu")
 
         for number, food in enumerate(food_list, start=1):
-            print(f"{number}. {food['name']}")
+            print(f"{number}. {food[1]}")  # Displaying the food name (index 1)
 
         try:
             choice = int(input("\nChoose a food: "))
@@ -77,26 +78,44 @@ def display_food_choices(food_list):
             food_to_update = food_list[choice - 1]
             return food_to_update
 
-def update_food(foods):
-    if not foods:
-        print("No foods have been added yet.\n")
-        return
+def update_food():
+
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    cursor.execute('''
+        SELECT id, name, calories, protein, serving_size FROM foods
+    ''')
+
+    foods = cursor.fetchall()
 
     food_to_update = display_food_choices(foods)
-
 
     if food_to_update is None:
         return 
 
     update_food_name(food_to_update)
 
-    print(f"\nCurrent calories: {food_to_update['calories']} kcal")
-    new_calories = get_valid_calories(f"Enter the new calorie count for '{food_to_update['name']}': ")
-    food_to_update['calories'] = new_calories
+    print(f"\nCurrent calories: {food_to_update[2]} kcal")
+    new_calories = get_valid_calories(f"Enter the new calorie count for '{food_to_update[2]}': ")
+    
 
-    print(f"\nCurrent protein: {food_to_update['protein']} g")
-    new_protein = get_valid_protein(f"Enter the new protein count for {food_to_update['name']}: ")
-    food_to_update['protein'] = new_protein
+    print(f"\nCurrent protein: {food_to_update[3]} g")
+    new_protein = get_valid_protein(f"Enter the new protein count for {food_to_update[3]}: ")
+    
+
+    print(f"\nCurrent serving size: {food_to_update[4]} g")
+    new_serving = get_valid_serving(f"Enter the new serving size for '{food_to_update[4]}': ")
+
+    cursor.execute('''
+        UPDATE foods
+        SET name = ?, calories = ?, protein = ?, serving_size = ?
+        WHERE id = ?
+    ''', (food_to_update[1], new_calories, new_protein, new_serving, food_to_update[0]))
+
+    connection.commit()
+    connection.close()
+    
 
 
 def delete_food(foods): 

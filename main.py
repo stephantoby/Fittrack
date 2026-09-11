@@ -34,21 +34,20 @@ def main():
 
          if choice == 1:
              
-             add_food(foods)
-             save_foods(foods)
+             add_food()
              input(f"\nPress Enter to return to the main menu...")
 
          elif choice == 2:
 
-             if update_food(foods) == None:
+             if update_food() == None:
                  input("Press Enter to return to the main menu...\n")
              else:
                  input(f"\nFood has been updated. Press Enter to return to the main menu...")
-                 save_foods(foods)
+                 
 
             
          elif choice == 3:
-            view_foods(foods)
+            view_foods()
             input(f"\nPress Enter to return to the main menu...")
 
          elif choice == 4:

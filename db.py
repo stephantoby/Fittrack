@@ -17,12 +17,12 @@ serving_size REAL
 )
 ''')
 
-cursor.execute('''
-SELECT name FROM foods
-''')
+#cursor.execute('''
+#SELECT name FROM foods
+#''')
 
-foods = cursor.fetchall()
-print(foods)
+#foods = cursor.fetchall()
+#print(foods)
 
 
 cursor.execute('''
