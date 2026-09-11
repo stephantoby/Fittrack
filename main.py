@@ -44,15 +44,12 @@ def main():
              else:
                  input(f"\nFood has been updated. Press Enter to return to the main menu...")
                  
-
-            
          elif choice == 3:
             view_foods()
             input(f"\nPress Enter to return to the main menu...")
 
          elif choice == 4:
-             delete_food(foods)
-             save_foods(foods)
+             delete_food()
              input(f"\nPress Enter to return to the main menu...")
 
          elif  choice == 5:

@@ -80,7 +80,7 @@ def update_entry(foods_entries, foods):
     food_to_update['protein'] = protein
 
     input(f"\nFood entry has been updated. Press Enter to return to the main menu...")
-
+'''
 def delete_food(food_entries): 
     while True:
         print("\nYour Foods:   \n")
@@ -109,3 +109,4 @@ def delete_food(food_entries):
         except ValueError:
             print("Invalid input. Please enter a number.")
             continue
+'''
