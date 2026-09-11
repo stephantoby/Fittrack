@@ -1,7 +1,7 @@
 from validation import get_valid_calories, get_valid_protein, get_valid_serving
 from db import get_connection
 
-def add_food(foods):
+def add_food():
     while True:
         food_name = input("Enter the name of the food: ").strip()
 
@@ -27,16 +27,19 @@ def add_food(foods):
     connection.close()
     print("\nSuccessfully added food to the database.")
 
-def view_foods(foods):
-        if not foods:
-            print("\nNo foods have been added yet.")
-            return
+def view_foods():
+        connection = get_connection()
+        cursor = connection.cursor()
+        cursor.execute('''
+        SELECT name, calories, protein, serving_size FROM foods
+        ''')
         
+        foods = cursor.fetchall()
         for food in foods:
-         print(f"Food Name: {food['name']}")
-         print(f"Calories: {food['calories']} kcal")
-         print(f"Protein: {food['protein']} g")
-         print(f"Servings: {food['serving_size']} g")
+         print(f"Food Name: {food[0]}")
+         print(f"Calories: {food[1]} kcal")
+         print(f"Protein: {food[2]} g")
+         print(f"Servings: {food[3]} g")
          print("------------------------")
 
 def update_food_name(food_to_update):
