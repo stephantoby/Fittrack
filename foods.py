@@ -1,4 +1,5 @@
 from validation import get_valid_calories, get_valid_protein, get_valid_serving
+from db import get_connection
 
 def add_food(foods):
     while True:
@@ -14,15 +15,17 @@ def add_food(foods):
     protein = get_valid_protein("Enter the amount of protein (in grams): ")
     serving_size = get_valid_serving("Enter the serving size: ")
 
-    
-    food = {
-            "name": food_name,
-            "calories": calories,
-            "protein": protein,
-            "serving_size": serving_size
-            }
+    connection = get_connection()
+    cursor = connection.cursor()
 
-    foods.append(food)
+    cursor.execute('''
+        INSERT INTO foods (name, calories, protein, serving_size)
+        VALUES (?,?,?,?)
+    ''', (food_name, calories, protein, serving_size))
+
+    connection.commit()
+    connection.close()
+    print("\nSuccessfully added food to the database.")
 
 def view_foods(foods):
         if not foods:
