@@ -16,6 +16,16 @@ protein REAL,
 serving_size REAL
 )
 ''')
+#cursor.execute('''
+#INSERT INTO foods (name, calories, protein, serving_size) VALUES
+#('Apple', 52, 0.3, 100),
+#('Banana', 89, 1.1, 100),   
+#('Almonds', 579, 21.2, 100),
+#('Egg', 155, 13, 50),
+#('Oatmeal', 68, 2.4, 40),
+#('Greek Yogurt', 59, 10, 150),
+#('Brown Rice', 123, 2.6, 100)
+#''')
 
 #cursor.execute('''
 #SELECT name FROM foods
@@ -28,10 +38,11 @@ serving_size REAL
 cursor.execute('''
 CREATE TABLE IF NOT EXISTS food_entries (
 id INTEGER PRIMARY KEY AUTOINCREMENT,
-name TEXT,
+food_id INTEGER NOT NULL,
 amount_grams REAL,
 calories REAL,
-protein REAL
+protein REAL,
+FOREIGN KEY (food_id) REFERENCES foods(id)
 )
 ''')
 

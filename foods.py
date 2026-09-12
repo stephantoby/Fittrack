@@ -42,6 +42,8 @@ def view_foods():
          print(f"Servings: {food[3]} g")
          print("------------------------")
 
+         connection.close()
+
 
 def update_food_name(food_to_update):
     while True:
@@ -159,3 +161,5 @@ def delete_food():
         except ValueError:
             print("Invalid input. Please enter a number.")
             continue
+
+        connection.close()

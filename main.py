@@ -72,8 +72,7 @@ def main():
                 print("\n")
 
                 if choice == 1:
-                    log_food(foods, food_entries)
-                    save_log(food_entries)
+                    log_food()
                 elif choice == 2:
                     view_food_log(food_entries)
                 

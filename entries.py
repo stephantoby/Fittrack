@@ -1,16 +1,25 @@
 from foods import display_food_choices
 from calculations import get_amount, calculate_entry_nutrition
 from validation import get_valid_serving
+from db import get_connection
 
-def log_food(foods, food_entries):
-    
+def log_food():
+        connection = get_connection()
+        cursor = connection.cursor()
+
+        cursor.execute('''
+        SELECT id, name, calories, protein, serving_size FROM foods
+        ''')
+
+        foods = cursor.fetchall()
+        
         food_to_log = display_food_choices(foods)
 
         if food_to_log is None:
             return
         
         amount = get_amount(food_to_log)
-        food_name = food_to_log['name']
+        food_name = food_to_log[1]  # Assuming the name is at index 1 in the food tuple
 
         actual_calories, actual_protein = calculate_entry_nutrition(food_to_log, amount)
 
@@ -20,14 +29,6 @@ def log_food(foods, food_entries):
 
         input("\nPress enter to continue...")
 
-        food_entry = {
-            "name": food_name,
-            "amount_grams": amount,
-            "calories": actual_calories,
-            "protein": actual_protein
-            }
-        
-        food_entries.append(food_entry)
 
 def view_food_log(food_entries):
     if not food_entries:
