@@ -154,12 +154,11 @@ def delete_food():
                     DELETE FROM foods 
                     WHERE id = ?
                  ''', (foods[choice - 1][0],))  # Deleting by id (index 0)
-                connection.commit()
-                connection.close()
+                
                 print(f"\n{foods[choice - 1][1]} has been deleted.")
                 break
         except ValueError:
             print("Invalid input. Please enter a number.")
             continue
-
-        connection.close()
+    connection.commit()        
+    connection.close()

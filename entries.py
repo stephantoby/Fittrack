@@ -124,8 +124,20 @@ def update_entry():
 
     input(f"\nFood entry has been updated. Press Enter to return to the main menu...")
 
-'''
-def delete_food(food_entries): 
+
+def delete_food(): 
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    cursor.execute('''
+    SELECT food_entries.id, foods.name, food_entries.amount_grams, food_entries.calories, food_entries.protein
+    FROM food_entries
+    JOIN foods
+        ON food_entries.id = foods.id
+     ''')
+
+    food_entries = cursor.fetchall()
+
     while True:
         print("\nYour Foods:   \n")
 
@@ -136,7 +148,7 @@ def delete_food(food_entries):
         print("0. Return to main menu")
 
         for number, food in enumerate(food_entries, start=1):
-            print(f"{number}. {food['name']}")
+            print(f"{number}. {food[1]}")
             
         try:
             choice = int(input("\nChoose a food to delete: "))
@@ -146,11 +158,15 @@ def delete_food(food_entries):
                 print("\nInvalid choice. Please enter a valid number.")
                 continue
             if choice >= 1 and choice <= len(food_entries):
+                cursor.execute('''
+                DELETE FROM food_entries
+                WHERE id = ?
+            ''', (food_entries[choice - 1][0],))
                 deleted_food = food_entries[choice - 1]
-                del food_entries[choice - 1]
-                print(f"\n{deleted_food['name']} has been deleted.")
+                print(f"\n{deleted_food[1]} has been deleted.")
                 break
         except ValueError:
             print("Invalid input. Please enter a number.")
             continue
-'''
+    connection.commit()
+    connection.close()        

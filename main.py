@@ -136,8 +136,7 @@ def main():
                     update_entry()
                 
                 elif choice == 5:
-                    delete_food(food_entries)
-                    save_log(food_entries)
+                    delete_food()
 
                 elif choice == 6:
                     break
