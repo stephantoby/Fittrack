@@ -74,7 +74,7 @@ def main():
                 if choice == 1:
                     log_food()
                 elif choice == 2:
-                    view_food_log(food_entries)
+                    view_food_log()
                 
                 elif choice == 3:
                    while True:

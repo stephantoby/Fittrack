@@ -29,8 +29,28 @@ def log_food():
 
         input("\nPress enter to continue...")
 
+        cursor.execute('''
+        INSERT INTO food_entries (food_id, amount_grams, calories, protein)
+        VALUES (?, ?, ?, ?)
+        ''', (food_to_log[0], amount, actual_calories, actual_protein))
 
-def view_food_log(food_entries):
+        connection.commit()
+        connection.close()
+
+
+def view_food_log():
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    cursor.execute('''
+    SELECT foods.name, food_entries.amount_grams, food_entries.calories, food_entries.protein 
+    FROM food_entries
+    JOIN foods 
+        ON food_entries.food_id = foods.id
+    ''')
+
+    food_entries = cursor.fetchall()
+
     if not food_entries:
         print("\nNo foods have been added yet.")
         return
@@ -40,12 +60,13 @@ def view_food_log(food_entries):
     print("================================\n")
 
     for number, food in enumerate(food_entries, start= 1):
-        print(f"{number}.")
-        print(f"{food['name']}")
-        print(f"Amount: {food['amount_grams']} g")
-        print(f"Calories: {food['calories']} kcal")
-        print(f"Protein: {food['protein']} g")
+        print(f"{number}.{food[0]}")
+        print(f"Amount: {food[1]} g")
+        print(f"Calories: {food[2]} kcal")
+        print(f"Protein: {food[3]} g")
         print("-----------------------------")
+
+    connection.close()
 
 def update_entry(foods_entries, foods):
     if not foods_entries:
