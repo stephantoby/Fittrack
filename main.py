@@ -75,7 +75,6 @@ def main():
                     log_food()
                 elif choice == 2:
                     view_food_log()
-                
                 elif choice == 3:
                    while True:
                        print("================================")
@@ -134,8 +133,7 @@ def main():
                             print("Invalid choice. Please try again.")                               
                         
                 elif choice == 4:
-                    update_entry(food_entries,foods)
-                    save_log(food_entries)
+                    update_entry()
                 
                 elif choice == 5:
                     delete_food(food_entries)

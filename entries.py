@@ -68,7 +68,18 @@ def view_food_log():
 
     connection.close()
 
-def update_entry(foods_entries, foods):
+def update_entry():
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    cursor.execute('''
+    SELECT food_entries.id, foods.name, food_entries.amount_grams, food_entries.calories, food_entries.protein
+    FROM food_entries
+    JOIN foods ON food_entries.food_id = foods.id
+    ''')
+
+    foods_entries = cursor.fetchall()
+
     if not foods_entries:
         print("No foods have been added yet.\n")
         return
@@ -78,14 +89,15 @@ def update_entry(foods_entries, foods):
     if food_to_update is None:
         return 
 
-    print(f"\nYou have selected: {food_to_update['name']} - {food_to_update['amount_grams']} g")
+    print(f"\nYou have selected: {food_to_update[1]} - {food_to_update[2]} g")
 
     input(f"\nPress Enter to update the details")
 
+    
     original_food = None
 
-    for food in foods:
-        if food['name'] == food_to_update['name']:
+    for food in foods_entries:
+        if food[1] == food_to_update[1]:
             original_food = food
             break
 
@@ -93,15 +105,25 @@ def update_entry(foods_entries, foods):
         print("Food not found in the list.")
         return
 
-    print(f"\nCurrent amount served: {food_to_update['amount_grams']} g")
-    new_amount = get_valid_serving(f"Enter the new amount for '{food_to_update['name']}': ")
-    food_to_update['amount_grams'] = new_amount
+    print(f"\nCurrent amount served: {food_to_update[2]} g")
+    new_amount = get_valid_serving(f"Enter the new amount for '{food_to_update[1]}': ")
+    
 
     calories, protein = calculate_entry_nutrition(original_food, new_amount)
-    food_to_update['calories'] = calories
-    food_to_update['protein'] = protein
+
+    cursor.execute('''
+        UPDATE food_entries 
+        SET amount_grams = ?, 
+            calories = ?, 
+            protein = ?
+        WHERE id = ?
+    ''', (new_amount, calories, protein, original_food[0]))
+
+    connection.commit()
+    connection.close()
 
     input(f"\nFood entry has been updated. Press Enter to return to the main menu...")
+
 '''
 def delete_food(food_entries): 
     while True:
