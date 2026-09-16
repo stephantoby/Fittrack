@@ -27,9 +27,9 @@ serving_size REAL
 #('Brown Rice', 123, 2.6, 100)
 #''')
 
-#cursor.execute('''
-#SELECT name FROM foods
-#''')
+cursor.execute('''
+SELECT name FROM foods
+''')
 
 #foods = cursor.fetchall()
 #print(foods)
@@ -49,7 +49,9 @@ FOREIGN KEY (food_id) REFERENCES foods(id)
 cursor.execute('''
 CREATE TABLE IF NOT EXISTS goals (
 id INTEGER PRIMARY KEY AUTOINCREMENT,
-daily_calories_goal REAL,
+goal_type TEXT,
+target_weight REAL,
+daily_calorie_goal REAL,
 daily_protein_goal REAL
 )
 ''')

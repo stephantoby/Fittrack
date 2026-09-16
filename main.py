@@ -4,6 +4,7 @@ from entries import *
 from calculations import *
 from goals import *
 from storage import *
+from db import get_connection
 
 
 def main():
@@ -80,10 +81,12 @@ def main():
                        print("================================")
                        print("        Daily Totals!      ")
                        print("================================\n")
-                       print("1. Calculate Daily Calories and Protein")
-                       print("2. Add Daily calorie goal and protein goal")
+                       print("1. Calculate total calories and protein")
+                       print("2. Log Body Weight, Daily Calorie and Protein Goal")
                        print("3. View Daily Totals with Goals")
                        print("4. Return\n")
+                       print("5. View how much remaining")
+                      
 
                        try:
                            choice = int(input("Choose an option: "))
@@ -93,7 +96,8 @@ def main():
                        print("\n")
                        
                        if choice == 1:
-                           total_calories, total_protein = calculate_totals(food_entries)
+                           
+                           total_calories, total_protein = calculate_totals()
                            print("========Daily Totals========")
                            print(f"\nCalories: {total_calories} kcal")
                            print(f"Protein: {total_protein} g")
@@ -102,33 +106,58 @@ def main():
                            input(f"\nPress Enter to return to the main menu...")
                            
                        elif choice == 2:
+                            while True:
+                                goal_type = input("Enter goal type (Bulk/Cut/Maintain): ").strip()
+                                if goal_type == "":
+                                    print("\n Goal type cannot be empty. Please enter a valid type.")
+                                    continue
+                                else:
+                                    break
+
+                            body_weight = get_valid_weight("Enter your body weight(kg): ") 
                             daily_calorie_goal = get_valid_calories("Enter your daily calorie goal: ")
                             daily_protein_goal = get_valid_protein("Enter your daily protein goal: ")
     
-                            total_calories, total_protein = calculate_totals(food_entries)
+                            total_calories, total_protein = calculate_totals()
+
+                            connection = get_connection()
+                            cursor = connection.cursor()
+                            
+                            cursor.execute('''
+                            INSERT INTO goals (goal_type, target_weight, daily_calorie_goal, daily_protein_goal)
+                            VALUES (?,?,?,?)
+                            ''', (goal_type, body_weight, daily_calorie_goal, daily_protein_goal))
+                            
+                            connection.commit()
+                            connection.close()
+
+                            print("Successfully stored into the database")
     
-                            print("\n========Daily Totals========")
-                            print(f"\nCalories: {total_calories} kcal / Goal: {daily_calorie_goal} kcal")
-                            print(f"Protein: {total_protein} g / Goal: {daily_protein_goal} g")
-                            print(f"Foods Logged: {len(food_entries)}")
-                            print("--------------------------------")
-                            print(f"\nCalories remaining: {daily_calorie_goal - total_calories}")
-                            print(f"Protein remaining: {daily_protein_goal - total_protein}")
-                            input(f"\nPress Enter to return to the main menu...")
+    
 
-                            daily_goal = {
-                                "daily_calorie_goal": daily_calorie_goal,
-                                "daily_protein_goal": daily_protein_goal
-                            }
+                       elif choice == 3:
+                          
 
-                            daily_goals.append(daily_goal)
-                            save_goals(daily_goals)
+                           print("\n========Body Weight========")
+                           print(f"\nCalories: {total_calories} kcal / Goal: {daily_calorie_goal} kcal")
 
                        elif choice == 3:
                            view_goals(daily_goals)
 
                        elif choice == 4:
                             break
+
+                       elif choice == 5:
+                           
+                           print("\n========Daily Totals========")
+                           print(f"\n Current Weight: {body_weight}")
+                           print(f"\nCalories: {total_calories} kcal / Goal: {daily_calorie_goal} kcal")
+                           print(f"Protein: {total_protein} g / Goal: {daily_protein_goal} g")
+                           print(f"Foods Logged: {len(food_entries)}")
+                           print("--------------------------------")
+                           print(f"\nCalories remaining: {calculate_remaining}")
+                           print(f"Protein remaining: {daily_protein_goal - total_protein}")
+                           input(f"\nPress Enter to return to the main menu...")
                        else:
                             print("Invalid choice. Please try again.")                               
                         
@@ -137,6 +166,7 @@ def main():
                 
                 elif choice == 5:
                     delete_food()
+
 
                 elif choice == 6:
                     break

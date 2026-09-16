@@ -7,6 +7,9 @@ def invalid_protein(protein):
 def invalid_serving(serving):
     return serving < 0 or serving > 500
 
+def invalid_weight(body_weight):
+    return body_weight < 0 or body_weight > 400
+
 def get_valid_calories(prompt):
     while True:
         try:
@@ -49,3 +52,17 @@ def get_valid_serving(prompt):
             print("Invalid input. Please enter numeric values for serving size.")
             continue
     return amount
+
+def get_valid_weight(prompt):
+    while True:
+        try:
+            body_weight = float(input(prompt))
+            if invalid_weight(body_weight):
+                print("Body weight cannot be negative or exceed 400. Please enter a valid number.")
+                continue
+            else:
+                break
+        except ValueError:
+            print("Invalid input. Please enter numeric values for body weight.")
+            continue
+    return body_weight
