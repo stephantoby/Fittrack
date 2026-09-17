@@ -136,10 +136,31 @@ def main():
     
 
                        elif choice == 3:
-                          
+                           connection = get_connection()
+                           cursor = connection.cursor()
 
-                           print("\n========Body Weight========")
-                           print(f"\nCalories: {total_calories} kcal / Goal: {daily_calorie_goal} kcal")
+                           cursor.execute('''
+                           SELECT daily_calorie_goal, daily_protein_goal
+                           FROM goals
+                         ''')
+
+                           result = cursor.fetchall()
+
+                           row = result[0] 
+
+                           daily_calorie_goal = row[0]
+                           daily_protein_goal = row[1]
+
+                           total_calories_consumed, total_protein_consumed = calculate_totals()
+
+                           print("\n========Nutrition Remaining========")
+                           print(f"\nCalories: {total_calories_consumed} kcal / Goal: {daily_calorie_goal} kcal")
+                           print(f"Protein: {total_protein_consumed} g / Goal: {daily_protein_goal} g")
+                           print("--------------------------------")
+                           remaining_calories, remaining_protein = calculate_remaining(daily_calorie_goal, daily_protein_goal, total_calories_consumed, total_protein_consumed)
+                           print(f"\nCalories remaining: {remaining_calories}")
+                           print(f"Protein remaining: {remaining_protein}")
+                           input(f"\nPress Enter to return to the main menu...")
 
                        elif choice == 3:
                            view_goals(daily_goals)
@@ -152,12 +173,7 @@ def main():
                            print("\n========Daily Totals========")
                            print(f"\n Current Weight: {body_weight}")
                            print(f"\nCalories: {total_calories} kcal / Goal: {daily_calorie_goal} kcal")
-                           print(f"Protein: {total_protein} g / Goal: {daily_protein_goal} g")
-                           print(f"Foods Logged: {len(food_entries)}")
-                           print("--------------------------------")
-                           print(f"\nCalories remaining: {calculate_remaining}")
-                           print(f"Protein remaining: {daily_protein_goal - total_protein}")
-                           input(f"\nPress Enter to return to the main menu...")
+                           
                        else:
                             print("Invalid choice. Please try again.")                               
                         

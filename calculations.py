@@ -40,22 +40,11 @@ def calculate_entry_nutrition(food_to_log, amount):
 
     return (calories, protein)
 
-def calculate_remaining():
-    connection = get_connection()
-    cursor = connection.cursor()
+def calculate_remaining(daily_calorie_goal, daily_protein_goal, total_calories_consumed, total_protein_consumed):
+    remaining_calories = daily_calorie_goal - total_calories_consumed
+    remaining_protein = daily_protein_goal - total_protein_consumed
 
-    cursor.execute('''
-    SELECT daily_calorie_goal, SUM(calories)
-    FROM goals 
-    JOIN food_entries
-    ON goals.id = food_entries.id 
-  ''')
-
-    result = cursor.fetchall()
-
-    row = result[0]
-
-    return row[0] - row[1]
+    return (remaining_calories,remaining_protein)
 
 
 
