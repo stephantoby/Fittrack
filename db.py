@@ -56,5 +56,13 @@ daily_protein_goal REAL
 )
 ''')
 
+cursor.execute('''
+CREATE TABLE IF NOT EXISTS body_weights (
+id INTEGER PRIMARY KEY AUTOINCREMENT,
+current_weight REAL,
+date TEXT
+)
+''')
+
 connection.commit()
 connection.close()

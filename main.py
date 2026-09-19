@@ -179,13 +179,13 @@ def main():
                 if choice == 1:
                     set_daily_goals()
                 elif choice == 2:
-                    return
+                    log_body_weight()
 
                 elif choice == 3:
-                    return
+                    view_goals()
 
                 elif choice == 4:
-                     return
+                    view_body_weight()
 
                 elif choice == 5:
                     break

@@ -1,3 +1,5 @@
+from datetime import datetime
+
 def invalid_calorie(calories):
     return calories <= 0 or calories > 10000
 
@@ -9,6 +11,7 @@ def invalid_serving(serving):
 
 def invalid_weight(body_weight):
     return body_weight < 0 or body_weight > 400
+
 
 def get_valid_calories(prompt):
     while True:
@@ -68,3 +71,16 @@ def get_valid_weight(prompt):
     return body_weight
 
 #def get_valid_goal_type
+
+def get_valid_date(prompt):
+    while True:
+       try:
+        date = input(prompt)
+        datetime.strptime(date, "%Y-%m-%d")
+        return date
+       except ValueError:
+           print("Invalid date entry. Please try again!")
+           continue  
+
+
+    
