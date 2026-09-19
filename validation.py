@@ -66,3 +66,5 @@ def get_valid_weight(prompt):
             print("Invalid input. Please enter numeric values for body weight.")
             continue
     return body_weight
+
+#def get_valid_goal_type
