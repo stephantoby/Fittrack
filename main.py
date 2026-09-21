@@ -166,7 +166,9 @@ def main():
                 print("2. Log Body Weight")
                 print("3. View Current Goals")
                 print("4. View Body Weight")
-                print("5. Return\n")
+                print("5. Update Body Weight")
+                print("6. Delete Body Weight")
+                print("7. Return\n")
                 
 
                 try:
@@ -180,14 +182,15 @@ def main():
                     set_daily_goals()
                 elif choice == 2:
                     log_body_weight()
-
                 elif choice == 3:
                     view_goals()
-
                 elif choice == 4:
                     view_body_weight()
-
                 elif choice == 5:
+                    update_body_weight()
+                elif choice == 6:
+                    delete_body_weight()
+                elif choice == 7:
                     break
 
                 else:

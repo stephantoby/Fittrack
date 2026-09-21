@@ -87,15 +87,77 @@ def view_body_weight():
     connection.close()
 
     if not view_weight:
-            print("\nNo weight has been set yet.")
-            return
+        print("\nNo weight has been set yet.")
+        return
     print("================================")
     print("        BODY WEIGHT!       ")
     print("================================\n")
     
     for number, weight in enumerate(view_weight, start= 1):
         print(f"{number}. {weight[0]} - {weight[1]}")
+
+def display_weights(weight_list):
+    while True:
+        print("   \nYour Weights:   \n")
+        print("0. Return to main menu")
+
+        for number, weight in enumerate(weight_list, start=1):
+            print(f"{number}. {weight[1]} - {weight[2]}") 
     
+        try:
+            choice = int(input("\nChoose an Entry: "))
+            if choice == 0:
+                return None
+            if choice < 0 or choice > len(weight_list):
+                print("\nInvalid choice. Please enter a valid number.")
+                continue
+        except ValueError:
+            print("\nInvalid input. Please enter a number.")
+            continue
+    
+        if choice >= 1 and choice <= len(weight_list):
+            weight_to_update = weight_list[choice - 1]
+            return weight_to_update
+        
+def update_body_weight():
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    cursor.execute('''
+    SELECT *
+    FROM body_weights
+    ''')
+    
+    body_weights = cursor.fetchall()
+
+    weight_to_update = display_weights(body_weights)
+
+    if weight_to_update is None:
+        return 
+    
+    print(f"\nYou have selected: {weight_to_update[1]} - {weight_to_update[2]} ")
+    
+    input(f"\nPress Enter to update the details")
+    
+    print(f"\nCurrent weight: {weight_to_update[1]} ")
+    new_weight = get_valid_weight(f"Enter the new weight for '{weight_to_update[1]}': ")
+    new_date = get_valid_date(f"Enter the new date: ")
+    
+    cursor.execute('''
+        UPDATE body_weights 
+        SET current_weight = ?, 
+            date = ?
+        WHERE id = ?
+    ''', (new_weight, new_date, weight_to_update[0]))
+    
+    connection.commit()
+    connection.close()
+    
+    input(f"\n Weight history has been updated. Press Enter to return to the menu...")
+
+
+def delete_body_weight():
+    return
 
     
   
