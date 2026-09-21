@@ -157,7 +157,33 @@ def update_body_weight():
 
 
 def delete_body_weight():
-    return
-
+    connection = get_connection()
+    cursor = connection.cursor()
+    
+    cursor.execute('''
+    SELECT *
+    FROM body_weights
+    ''')
+    
+    body_weights = cursor.fetchall()
+    
+    weight_to_update = display_weights(body_weights)
+    
+    if weight_to_update is None:
+        return 
+    
+    print(f"\nYou have selected: {weight_to_update[1]} - {weight_to_update[2]} ")
+    
+    input(f"\nPress Enter to delete weight")
+    
+    cursor.execute('''
+    DELETE FROM body_weights 
+    WHERE id = ?  
+    ''', (weight_to_update[0],))
+    
+    connection.commit()
+    connection.close()
+    
+    input(f"\n Weight history has been updated. Press Enter to return to the menu...")
     
   
