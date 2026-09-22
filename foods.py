@@ -46,15 +46,24 @@ def view_foods():
 
 
 def update_food_name(food_to_update):
-    while True:
-            
+    while True:    
             new_name = input(f"Enter the new name for '{food_to_update[1]}' (or press Enter to keep it the same): ").strip()
             if new_name == "":
                 new_name = food_to_update[1]
                 break
             else:
                 print(f"\nFood name updated to: {new_name}")
-                food_to_update['name'] = new_name
+                connection = get_connection()
+                cursor = connection.cursor()
+
+                cursor.execute('''
+                UPDATE foods
+                SET name = ?
+                WHERE id = ?
+              ''', (new_name, food_to_update[0]))
+
+                connection.commit()
+                connection.close()
                 break     
 
 def display_food_choices(food_list):
@@ -81,12 +90,12 @@ def display_food_choices(food_list):
             return food_to_update
 
 def update_food():
-
     connection = get_connection()
     cursor = connection.cursor()
 
     cursor.execute('''
-        SELECT id, name, calories, protein, serving_size FROM foods
+        SELECT id, name, calories, protein, serving_size 
+        FROM foods
     ''')
 
     foods = cursor.fetchall()
@@ -117,8 +126,6 @@ def update_food():
 
     connection.commit()
     connection.close()
-    
-
 
 def delete_food(): 
     connection = get_connection()

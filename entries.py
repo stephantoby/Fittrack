@@ -93,23 +93,11 @@ def update_entry():
 
     input(f"\nPress Enter to update the details")
 
-    
-    original_food = None
-
-    for food in foods_entries:
-        if food[1] == food_to_update[1]:
-            original_food = food
-            break
-
-    if original_food is None:
-        print("Food not found in the list.")
-        return
-
     print(f"\nCurrent amount served: {food_to_update[2]} g")
     new_amount = get_valid_serving(f"Enter the new amount for '{food_to_update[1]}': ")
     
 
-    calories, protein = calculate_entry_nutrition(original_food, new_amount)
+    calories, protein = calculate_entry_nutrition(food_to_update, new_amount)
 
     cursor.execute('''
         UPDATE food_entries 
@@ -117,12 +105,12 @@ def update_entry():
             calories = ?, 
             protein = ?
         WHERE id = ?
-    ''', (new_amount, calories, protein, original_food[0]))
+    ''', (new_amount, calories, protein, food_to_update[0]))
 
     connection.commit()
     connection.close()
 
-    input(f"\nFood entry has been updated. Press Enter to return to the main menu...")
+    input(f"\nFood entry has been updated. Press Enter to return to the menu...")
 
 
 def delete_food(): 

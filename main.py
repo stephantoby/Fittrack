@@ -3,16 +3,10 @@ from foods import *
 from entries import *
 from calculations import *
 from goals import *
-from storage import *
 from db import get_connection
 
 
 def main():
-
-    foods = load_foods()
-    food_entries = load_log()
-    daily_goals = load_goals()
-
     while True:
          print("================================")
          print("            FITTRACK      ")
@@ -196,8 +190,6 @@ def main():
                 else:
                     print("Invalid choice. Please try again.")
 
-
-                       
 
 if __name__ == "__main__":
     main()

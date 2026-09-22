@@ -47,7 +47,5 @@ def calculate_remaining(daily_calorie_goal, daily_protein_goal, total_calories_c
     return (remaining_calories,remaining_protein)
 
 
-
-
 def calculate_progress():
      return
