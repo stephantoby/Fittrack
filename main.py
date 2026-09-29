@@ -4,9 +4,15 @@ from entries import *
 from calculations import *
 from goals import *
 from db import get_connection
+import uvicorn
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+app = FastAPI()
 
 
 def main():
+
     while True:
          print("================================")
          print("            FITTRACK      ")
