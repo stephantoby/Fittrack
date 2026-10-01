@@ -4,12 +4,22 @@ from entries import *
 from calculations import *
 from goals import *
 from db import get_connection
-import uvicorn
+#import uvicorn
 from fastapi import FastAPI
-from pydantic import BaseModel
+#from pydantic import BaseModel
+#from .routers import get_food
 
 app = FastAPI()
+#app.include_router(get_food.router)
 
+@app.get("/foods")
+def view_food():
+    foods = view_foods()
+
+    if foods is None:
+        return
+
+    return foods
 
 def main():
 
@@ -60,8 +70,7 @@ def main():
                         input(f"\nFood has been updated. Press Enter to return to the menu...")
                  
                 elif choice == 3:
-                    view_foods()
-                    input(f"\nPress Enter to return to the menu...")
+                  return  
 
                 elif choice == 4:
                     delete_food()

@@ -1,9 +1,6 @@
 from validation import get_valid_calories, get_valid_protein, get_valid_serving
 from db import get_connection
-from fastapi import FastAPI
 from pydantic import BaseModel
-
-app = FastAPI()
 
 def add_food():
     while True:
@@ -31,25 +28,37 @@ def add_food():
     connection.close()
     print("\nSuccessfully added food to the database.")
 
-@app.get("/view-foods")
 def view_foods():
         connection = get_connection()
         cursor = connection.cursor()
         cursor.execute('''
-        SELECT name, calories, protein, serving_size FROM foods
+        SELECT * FROM foods
         ''')
 
         foods = cursor.fetchall()
+        #for food in foods:
+         #print(f"Food Name: {food[0]}")
+         #print(f"Calories: {food[1]} kcal")
+         #print(f"Protein: {food[2]} g")
+         #print(f"Servings: {food[3]} g")
+         #print("------------------------")
+         
+        connection.close()
+
+        result= []
+
         for food in foods:
-         print(f"Food Name: {food[0]}")
-         print(f"Calories: {food[1]} kcal")
-         print(f"Protein: {food[2]} g")
-         print(f"Servings: {food[3]} g")
-         print("------------------------")
+            food_dict = {
+                "id": food[0],
+                "name": food[1],
+                "calories": food[2],
+                "protein": food[3],
+                "servings": food[4]
+            }
 
-         connection.close()
-
-         return {"Message" : "Succefully retrived from db"}
+            result.append(food_dict)
+            
+        return result 
 
 def update_food_name(food_to_update):
     while True:    
