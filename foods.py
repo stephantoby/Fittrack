@@ -142,6 +142,8 @@ def update_food():
 
     foods = cursor.fetchall()
 
+    connection.close()
+
     food_to_update = display_food_choices(foods)
 
     if food_to_update is None:
@@ -160,11 +162,16 @@ def update_food():
     print(f"\nCurrent serving size: {food_to_update[4]} g")
     new_serving = get_valid_serving(f"Enter the new serving size for '{food_to_update[4]}': ")
 
+    update_food_to_database(food_to_update[0], food_to_update[1], new_calories, new_protein, new_serving)
+
+def delete_food_from_database(food_id):
+    connection = get_connection()
+    cursor = connection.cursor()
+
     cursor.execute('''
-        UPDATE foods
-        SET name = ?, calories = ?, protein = ?, serving_size = ?
+        DELETE FROM foods 
         WHERE id = ?
-    ''', (food_to_update[1], new_calories, new_protein, new_serving, food_to_update[0]))
+    ''', (food_id,))
 
     connection.commit()
     connection.close()
@@ -178,6 +185,8 @@ def delete_food():
     ''')
 
     foods = cursor.fetchall()
+
+    connection.close()
 
     while True:
         print("\nYour Foods:   \n")
@@ -199,15 +208,9 @@ def delete_food():
                 print("\nInvalid choice. Please enter a valid number.")
                 continue
             if choice >= 1 and choice <= len(foods):
-                cursor.execute('''
-                    DELETE FROM foods 
-                    WHERE id = ?
-                 ''', (foods[choice - 1][0],))  # Deleting by id (index 0)
-                
+                delete_food_from_database(foods[choice - 1][0])
                 print(f"\n{foods[choice - 1][1]} has been deleted.")
                 break
         except ValueError:
             print("Invalid input. Please enter a number.")
             continue
-    connection.commit()        
-    connection.close()

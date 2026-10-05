@@ -40,7 +40,11 @@ def add_food_entry(food_entry: Food):
 @app.put("/foods/{food_id}", response_description= "Updated food entry")
 def update_food_entry(food_id: int, food_entry: Food):
     update_food_to_database(food_id, food_entry.name, food_entry.calories, food_entry.protein, food_entry.serving_size)
-    
+
+@app.delete("/foods/{food_id}", response_description= "Deleted food entry")
+def delete_food_entry(food_id: int):
+    delete_food_from_database(food_id)
+
 def main():
 
     while True:
