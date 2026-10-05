@@ -6,7 +6,7 @@ from goals import *
 from db import get_connection
 #import uvicorn
 from fastapi import FastAPI
-#from pydantic import BaseModel
+from pydantic import BaseModel
 #from .routers import get_food
 
 app = FastAPI()
@@ -21,6 +21,24 @@ def view_food():
 
     return foods
 
+food_dic= {}
+
+class Food(BaseModel):
+    name: str
+    calories: int
+    protein: int
+    serving_size: int       
+
+@app.post("/foods")
+def add_food_entry(food_entry: Food):
+    add_food_to_database(
+        food_name=food_entry.name,
+        calories=food_entry.calories,
+        protein=food_entry.protein,
+        serving_size=food_entry.serving_size
+    )
+
+    
 def main():
 
     while True:
