@@ -21,7 +21,6 @@ def view_food():
 
     return foods
 
-food_dic= {}
 
 class Food(BaseModel):
     name: str
@@ -38,6 +37,9 @@ def add_food_entry(food_entry: Food):
         serving_size=food_entry.serving_size
     )
 
+@app.put("/foods/{food_id}", response_description= "Updated food entry")
+def update_food_entry(food_id: int, food_entry: Food):
+    update_food_to_database(food_id, food_entry.name, food_entry.calories, food_entry.protein, food_entry.serving_size)
     
 def main():
 

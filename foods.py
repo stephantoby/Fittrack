@@ -118,6 +118,19 @@ def display_food_choices(food_list):
             food_to_update = food_list[choice - 1]
             return food_to_update
 
+def update_food_to_database(food_id, new_name, new_calories, new_protein, new_serving):
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    cursor.execute('''
+        UPDATE foods
+        SET name = ?, calories = ?, protein = ?, serving_size = ?
+        WHERE id = ?
+    ''', (new_name, new_calories, new_protein, new_serving, food_id))
+
+    connection.commit()
+    connection.close()
+
 def update_food():
     connection = get_connection()
     cursor = connection.cursor()
