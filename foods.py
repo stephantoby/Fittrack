@@ -11,19 +11,15 @@ def add_food_to_database(food_name, calories, protein, serving_size):
         VALUES (?,?,?,?)
     ''', (food_name, calories, protein, serving_size))
     
-    connection.commit()
+    if cursor.rowcount == 0:
+        return None
 
     food_id = cursor.lastrowid
 
+    connection.commit()
     connection.close()
 
-    return {
-        "id": food_id,
-        "name": food_name,
-        "calories": calories,
-        "protein": protein,
-        "serving_size": serving_size
-    }
+    return food_id
 
 def add_food():
     while True:
@@ -128,8 +124,19 @@ def update_food_to_database(food_id, new_name, new_calories, new_protein, new_se
         WHERE id = ?
     ''', (new_name, new_calories, new_protein, new_serving, food_id))
 
+    if cursor.rowcount == 0:
+        return None
+
     connection.commit()
     connection.close()
+
+    return {
+        "id": food_id,
+        "name": new_name,
+        "calories": new_calories,
+        "protein": new_protein,
+        "serving_size": new_serving
+    }
 
 def update_food():
     connection = get_connection()
@@ -173,8 +180,16 @@ def delete_food_from_database(food_id):
         WHERE id = ?
     ''', (food_id,))
 
+    if cursor.rowcount == 0:
+        return None
+
     connection.commit()
     connection.close()
+
+    return {
+        "message": f"Food entry with ID {food_id} has been deleted."
+    }
+    
 
 def delete_food(): 
     connection = get_connection()

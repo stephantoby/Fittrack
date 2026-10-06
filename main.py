@@ -5,7 +5,7 @@ from calculations import *
 from goals import *
 from db import get_connection
 #import uvicorn
-from fastapi import FastAPI
+from fastapi import FastAPI, status, HTTPException
 from pydantic import BaseModel
 #from .routers import get_food
 
@@ -21,17 +21,30 @@ def view_food():
 
     return foods
 
-
 class Food(BaseModel):
     name: str
     calories: int
     protein: int
     serving_size: int       
 
-@app.post("/foods")
+class FoodResponse(BaseModel):
+    id: int
+    name: str
+    calories: int
+    protein: int
+    serving_size: int
+
+@app.post("/foods", status_code=status.HTTP_201_CREATED)
 def add_food_entry(food_entry: Food):
-    add_food_to_database(
+    food_id = add_food_to_database(
         food_name=food_entry.name,
+        calories=food_entry.calories,
+        protein=food_entry.protein,
+        serving_size=food_entry.serving_size
+    )
+    return FoodResponse(
+        id=food_id,
+        name=food_entry.name,
         calories=food_entry.calories,
         protein=food_entry.protein,
         serving_size=food_entry.serving_size
@@ -39,11 +52,24 @@ def add_food_entry(food_entry: Food):
 
 @app.put("/foods/{food_id}", response_description= "Updated food entry")
 def update_food_entry(food_id: int, food_entry: Food):
-    update_food_to_database(food_id, food_entry.name, food_entry.calories, food_entry.protein, food_entry.serving_size)
+    result = update_food_to_database(food_id, food_entry.name, food_entry.calories, food_entry.protein, food_entry.serving_size)
+    if result is None:
+        raise HTTPException(status_code=404, detail="Food entry not found.")
+
+    return FoodResponse(
+        id= food_id,
+        name= food_entry.name,
+        calories= food_entry.calories,
+        protein=food_entry.protein,
+        serving_size=food_entry.serving_size
+    )
 
 @app.delete("/foods/{food_id}", response_description= "Deleted food entry")
 def delete_food_entry(food_id: int):
-    delete_food_from_database(food_id)
+    result = delete_food_from_database(food_id)
+    if result is None:
+        raise HTTPException(status_code=404, detail="Food entry not found.")
+    return result
 
 def main():
 
