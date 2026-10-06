@@ -1,3 +1,5 @@
+from unittest import result
+
 from validation import *
 from foods import *
 from entries import *
@@ -12,29 +14,37 @@ from pydantic import BaseModel
 app = FastAPI()
 #app.include_router(get_food.router)
 
-@app.get("/foods")
-def view_food():
-    foods = view_foods()
-
-    if foods is None:
-        return
-
-    return foods
 
 class Food(BaseModel):
     name: str
-    calories: int
-    protein: int
+    calories: float
+    protein: float
     serving_size: int       
 
 class FoodResponse(BaseModel):
     id: int
     name: str
-    calories: int
-    protein: int
+    calories: float
+    protein: float
     serving_size: int
 
-@app.post("/foods", status_code=status.HTTP_201_CREATED)
+@app.get("/foods", response_description= "List all foods", response_model= list[FoodResponse])
+def view_food():
+    foods = view_foods_in_database()
+
+    result = []
+    for food in foods:
+        food_dic = { "id": food[0],
+                     "name": food[1],
+                     "calories": food[2], 
+                     "protein": food[3], 
+                     "serving_size": food[4]
+                     }
+        result.append(food_dic)
+
+    return result
+
+@app.post("/foods", status_code=status.HTTP_201_CREATED,  response_model = FoodResponse)
 def add_food_entry(food_entry: Food):
     food_id = add_food_to_database(
         food_name=food_entry.name,
@@ -42,6 +52,8 @@ def add_food_entry(food_entry: Food):
         protein=food_entry.protein,
         serving_size=food_entry.serving_size
     )
+   
+
     return FoodResponse(
         id=food_id,
         name=food_entry.name,
@@ -50,7 +62,7 @@ def add_food_entry(food_entry: Food):
         serving_size=food_entry.serving_size
     )
 
-@app.put("/foods/{food_id}", response_description= "Updated food entry")
+@app.put("/foods/{food_id}", response_description= "Updated food entry",  response_model = FoodResponse)
 def update_food_entry(food_id: int, food_entry: Food):
     result = update_food_to_database(food_id, food_entry.name, food_entry.calories, food_entry.protein, food_entry.serving_size)
     if result is None:

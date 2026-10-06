@@ -38,22 +38,27 @@ def add_food():
     add_food_to_database(food_name, calories, protein, serving_size)
     print("\nSuccessfully added food to the database.")
 
-def view_foods():
-        connection = get_connection()
-        cursor = connection.cursor()
-        cursor.execute('''
+def view_foods_in_database():
+    connection = get_connection()
+    cursor = connection.cursor()
+    cursor.execute('''
         SELECT * FROM foods
         ''')
 
-        foods = cursor.fetchall()
-        #for food in foods:
-         #print(f"Food Name: {food[0]}")
-         #print(f"Calories: {food[1]} kcal")
-         #print(f"Protein: {food[2]} g")
-         #print(f"Servings: {food[3]} g")
-         #print("------------------------")
-         
-        connection.close()
+    foods = cursor.fetchall()
+    connection.close()
+
+    return foods
+
+def view_foods():
+        foods = view_foods_in_database()
+
+        for food in foods:
+         print(f"Food Name: {food[0]}")
+         print(f"Calories: {food[1]} kcal")
+         print(f"Protein: {food[2]} g")
+         print(f"Servings: {food[3]} g")
+         print("------------------------")
 
         result= []
 
