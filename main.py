@@ -9,79 +9,17 @@ from db import get_connection
 #import uvicorn
 from fastapi import FastAPI, status, HTTPException
 from pydantic import BaseModel
-#from .routers import get_food
+from food_routes import router
 
-app = FastAPI()
-#app.include_router(get_food.router)
+def include_router(app):
+    app.include_router(router)
 
+def start_app():
+    app = FastAPI()
+    include_router(app)
+    return app
 
-class Food(BaseModel):
-    name: str
-    calories: float
-    protein: float
-    serving_size: int       
-
-class FoodResponse(BaseModel):
-    id: int
-    name: str
-    calories: float
-    protein: float
-    serving_size: int
-
-@app.get("/foods", response_description= "List all foods", response_model= list[FoodResponse])
-def view_food():
-    foods = view_foods_in_database()
-
-    result = []
-    for food in foods:
-        food_dic = { "id": food[0],
-                     "name": food[1],
-                     "calories": food[2], 
-                     "protein": food[3], 
-                     "serving_size": food[4]
-                     }
-        result.append(food_dic)
-
-    return result
-
-@app.post("/foods", status_code=status.HTTP_201_CREATED,  response_model = FoodResponse)
-def add_food_entry(food_entry: Food):
-    food_id = add_food_to_database(
-        food_name=food_entry.name,
-        calories=food_entry.calories,
-        protein=food_entry.protein,
-        serving_size=food_entry.serving_size
-    )
-   
-
-    return FoodResponse(
-        id=food_id,
-        name=food_entry.name,
-        calories=food_entry.calories,
-        protein=food_entry.protein,
-        serving_size=food_entry.serving_size
-    )
-
-@app.put("/foods/{food_id}", response_description= "Updated food entry",  response_model = FoodResponse)
-def update_food_entry(food_id: int, food_entry: Food):
-    result = update_food_to_database(food_id, food_entry.name, food_entry.calories, food_entry.protein, food_entry.serving_size)
-    if result is None:
-        raise HTTPException(status_code=404, detail="Food entry not found.")
-
-    return FoodResponse(
-        id= food_id,
-        name= food_entry.name,
-        calories= food_entry.calories,
-        protein=food_entry.protein,
-        serving_size=food_entry.serving_size
-    )
-
-@app.delete("/foods/{food_id}", response_description= "Deleted food entry")
-def delete_food_entry(food_id: int):
-    result = delete_food_from_database(food_id)
-    if result is None:
-        raise HTTPException(status_code=404, detail="Food entry not found.")
-    return result
+app = start_app()
 
 def main():
 
