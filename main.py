@@ -1,5 +1,4 @@
 from unittest import result
-
 from validation import *
 from foods import *
 from entries import *
@@ -8,15 +7,11 @@ from goals import *
 from db import get_connection
 #import uvicorn
 from fastapi import FastAPI, status, HTTPException
-from pydantic import BaseModel
 from food_routes import router
-
-def include_router(app):
-    app.include_router(router)
 
 def start_app():
     app = FastAPI()
-    include_router(app)
+    app.include_router(router)
     return app
 
 app = start_app()
