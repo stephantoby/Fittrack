@@ -37,19 +37,24 @@ def log_food():
         connection.commit()
         connection.close()
 
-
-def view_food_log():
+def view_foods_in_database():
     connection = get_connection()
     cursor = connection.cursor()
-
+    
     cursor.execute('''
     SELECT foods.name, food_entries.amount_grams, food_entries.calories, food_entries.protein 
     FROM food_entries
     JOIN foods 
         ON food_entries.food_id = foods.id
     ''')
-
+    
     food_entries = cursor.fetchall()
+    connection.close()
+
+    return food_entries
+
+def view_food_log():
+    food_entries = view_foods_in_database()
 
     if not food_entries:
         print("\nNo foods have been added yet.")
@@ -66,7 +71,7 @@ def view_food_log():
         print(f"Protein: {food[3]} g")
         print("-----------------------------")
 
-    connection.close()
+    
 
 def update_entry():
     connection = get_connection()

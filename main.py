@@ -8,10 +8,13 @@ from db import get_connection
 #import uvicorn
 from fastapi import FastAPI, status, HTTPException
 from food_routes import router
+from entries_routes import router as entries_router
 
 def start_app():
     app = FastAPI()
     app.include_router(router)
+    app.include_router(entries_router)
+
     return app
 
 app = start_app()
