@@ -14,13 +14,11 @@ class FoodResponse(BaseModel):
     serving_size: int
 
 class FoodEntry(BaseModel):
-    id: int
     food_id: int
     amount_grams: float
-    calories: float
-    protein: float
 
 class FoodEntryResponse(BaseModel):
+    id: int
     food_id: int
     amount_grams: float
     calories: float

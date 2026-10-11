@@ -3,6 +3,37 @@ from calculations import get_amount, calculate_entry_nutrition
 from validation import get_valid_serving
 from db import get_connection
 
+def log_food_entry_to_database(food_id, amount_grams, calories, protein):
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    cursor.execute('''
+        INSERT INTO food_entries (food_id, amount_grams, calories, protein)
+        VALUES (?, ?, ?, ?)
+    ''', (food_id, amount_grams, calories, protein))
+
+    connection.commit()
+    entry_id = cursor.lastrowid
+    connection.close()
+
+    return entry_id
+
+def get_food_by_id(food_id):
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    cursor.execute('''
+        SELECT id, name, calories, protein, serving_size
+        FROM foods
+        WHERE id = ?
+    ''', (food_id,))
+
+    food = cursor.fetchone()
+    connection.close()
+
+    return food
+
+
 def log_food():
         connection = get_connection()
         cursor = connection.cursor()
@@ -12,6 +43,8 @@ def log_food():
         ''')
 
         foods = cursor.fetchall()
+        connection.commit()
+        connection.close()
         
         food_to_log = display_food_choices(foods)
 
@@ -29,13 +62,8 @@ def log_food():
 
         input("\nPress enter to continue...")
 
-        cursor.execute('''
-        INSERT INTO food_entries (food_id, amount_grams, calories, protein)
-        VALUES (?, ?, ?, ?)
-        ''', (food_to_log[0], amount, actual_calories, actual_protein))
+        log_food_entry_to_database(food_to_log[0], amount, actual_calories, actual_protein)
 
-        connection.commit()
-        connection.close()
 
 def view_foods_in_database():
     connection = get_connection()
@@ -71,7 +99,7 @@ def view_food_log():
         print(f"Protein: {food[3]} g")
         print("-----------------------------")
 
-    
+
 
 def update_entry():
     connection = get_connection()
