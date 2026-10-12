@@ -99,7 +99,50 @@ def view_food_log():
         print(f"Protein: {food[3]} g")
         print("-----------------------------")
 
+def get_foodentry_by_id(food_id):
+    connection = get_connection()
+    cursor = connection.cursor()
 
+    cursor.execute('''
+        SELECT id, food_id, amount_grams, calories, protein
+        FROM food_entries
+        WHERE id = ?
+    ''', (food_id,))
+
+    food = cursor.fetchone()
+    connection.close()
+
+    return food
+
+
+def update_food_entry_in_database(entry_id, food_id, amount_grams, calories, protein):
+    connection = get_connection()
+    
+    try:
+        cursor = connection.cursor()
+
+        cursor.execute('''
+            UPDATE food_entries 
+            SET food_id = ?,
+                amount_grams = ?, 
+                calories = ?, 
+                protein = ?
+            WHERE id = ?
+        ''', (food_id, amount_grams, calories, protein, entry_id))
+
+        if cursor.rowcount == 0:
+            return None
+        
+        connection.commit()
+        return {
+        "id": entry_id,
+        "food_id": food_id,
+        "amount_grams": amount_grams,
+        "calories": calories,
+        "protein": protein
+        }
+    finally:
+        connection.close()
 
 def update_entry():
     connection = get_connection()
