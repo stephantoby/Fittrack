@@ -1,7 +1,7 @@
 from fastapi import APIRouter, status, HTTPException
 from entries import view_foods_in_database, delete_foodentry_in_database
-from models import FoodEntry, FoodEntryResponse
-from entries_services import create_food_entry, update_food_entry
+from app.models import FoodEntry, FoodEntryResponse
+from app.services.entries_services import create_food_entry, update_food_entry
 
 router = APIRouter(prefix="/entries", tags=["Entries"])
 

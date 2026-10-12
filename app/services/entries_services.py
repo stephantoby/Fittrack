@@ -1,4 +1,4 @@
-from models import FoodEntry
+from app.models import FoodEntry
 from entries import get_food_by_id, log_food_entry_to_database, calculate_entry_nutrition, get_foodentry_by_id, update_food_entry_in_database
 
 def create_food_entry(food_entry:FoodEntry):

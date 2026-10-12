@@ -1,5 +1,5 @@
 from foods import add_food_to_database, view_foods_in_database, update_food_to_database, delete_food_from_database
-from models import Food
+from app.models import Food
 
 def create_food(food_entry: Food):
     food_id = add_food_to_database(
