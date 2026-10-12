@@ -1,5 +1,5 @@
 from fastapi import APIRouter, status, HTTPException
-from entries import view_foods_in_database, update_food_entry_in_database
+from entries import view_foods_in_database, delete_foodentry_in_database
 from models import FoodEntry, FoodEntryResponse
 from entries_services import create_food_entry, update_food_entry
 
@@ -47,5 +47,11 @@ def update_entry(entry_id: int, food_entry: FoodEntry):
         calories=result["calories"],
         protein=result["protein"]
     )
-    
+
+@router.delete("/{entry_id}", response_description= "Deleted food entry")
+def delete_food_entry(entry_id: int):
+    result = delete_foodentry_in_database(entry_id)
+    if result is None:
+        raise HTTPException(status_code=404, detail="Food entry not found.")
+    return result
     

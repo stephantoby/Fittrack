@@ -188,6 +188,25 @@ def update_entry():
 
     input(f"\nFood entry has been updated. Press Enter to return to the menu...")
 
+def delete_foodentry_in_database(entry_id):
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    cursor.execute('''
+        DELETE FROM food_entries
+        WHERE id = ?
+    ''', (entry_id,))
+
+    if cursor.rowcount == 0:
+        return None
+
+    connection.commit()
+    connection.close()
+
+    return {
+        "message": f"Food entry with ID {entry_id} has been deleted."
+    }
+
 
 def delete_food(): 
     connection = get_connection()
