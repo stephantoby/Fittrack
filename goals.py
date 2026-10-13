@@ -1,6 +1,25 @@
 from db import get_connection
 from validation import get_valid_weight, get_valid_calories, get_valid_protein, get_valid_date
 
+def set_daily_goals_in_database(goal_type, target_weight, daily_calorie_goal, daily_protein_goal):
+    connection = get_connection()
+    cursor = connection.cursor()
+    
+    cursor.execute('''
+    INSERT INTO goals (goal_type, target_weight, daily_calorie_goal, daily_protein_goal)
+    VALUES (?,?,?,?)
+    ''', (goal_type, target_weight, daily_calorie_goal, daily_protein_goal))
+
+    if cursor.rowcount == 0:
+        return None
+    
+    goal_id = cursor.lastrowid
+    
+    connection.commit()
+    connection.close()
+
+    return goal_id
+
 def set_daily_goals():
     while True:
         goal_type = input("Enter goal type (Bulk/Cut/Maintain): ").strip()
@@ -16,17 +35,11 @@ def set_daily_goals():
     daily_calorie_goal = get_valid_calories("Enter your daily calorie goal: ")
     daily_protein_goal = get_valid_protein("Enter your daily protein goal: ")
  
+    result = set_daily_goals_in_database(goal_type, target_weight, daily_calorie_goal, daily_protein_goal)
+
+    if result is None:
+        return None
     
-    connection = get_connection()
-    cursor = connection.cursor()
-    
-    cursor.execute('''
-    INSERT INTO goals (goal_type, target_weight, daily_calorie_goal, daily_protein_goal)
-    VALUES (?,?,?,?)
-    ''', (goal_type, target_weight, daily_calorie_goal, daily_protein_goal))
-    
-    connection.commit()
-    connection.close()
     print("\n")
     print("Successfully Set")
 
@@ -62,7 +75,7 @@ def view_goals_in_database():
     return daily_goals
 
 def view_goals():
-    
+
     daily_goals = view_goals_in_database()
 
     if not daily_goals:

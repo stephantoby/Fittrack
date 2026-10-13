@@ -23,3 +23,16 @@ class FoodEntryResponse(BaseModel):
     amount_grams: float
     calories: float
     protein: float
+
+class Goals(BaseModel):
+    goal_type: str
+    target_weight: float 
+    daily_calorie_goal: float
+    daily_protein_goal: float
+
+class GoalResponse(BaseModel):
+    id: int
+    goal_type: str
+    target_weight: float
+    daily_calorie_goal: float
+    daily_protein_goal: float

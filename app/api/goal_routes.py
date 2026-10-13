@@ -1,5 +1,7 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, status 
 from goals import view_goals_in_database
+from app.services.goal_service import set_daily_goals
+from app.models import Goals, GoalResponse
 
 router = APIRouter(prefix="/goals", tags=["Goals"])
 
@@ -14,3 +16,15 @@ def get_goals():
         result.append(goal_dic)
         
         return result
+
+@router.post("/", status_code = status.HTTP_201_CREATED, response_model =GoalResponse)
+def set_goals(goals: Goals):
+    goal_id = set_daily_goals(goals)
+
+    return {
+        "id": goal_id,
+        "goal_type": goals.goal_type,
+        "target_weight": goals.target_weight,
+        "daily_calorie_goal": goals.daily_calorie_goal,
+        "daily_protein_goal": goals.daily_protein_goal
+    }
