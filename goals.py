@@ -137,6 +137,31 @@ def display_weights(weight_list):
         if choice >= 1 and choice <= len(weight_list):
             weight_to_update = weight_list[choice - 1]
             return weight_to_update
+
+def update_goal_in_database(goal_id, goal_type, target_weight, daily_calorie_goal, daily_protein_goal):
+    connection = get_connection()
+    cursor = connection.cursor()
+    
+    cursor.execute('''
+        UPDATE goals
+        SET goal_type = ?, target_weight = ?, daily_calorie_goal = ?, daily_protein_goal = ?
+        WHERE id = ?
+    ''', (goal_type, target_weight, daily_calorie_goal, daily_protein_goal, goal_id))
+    
+    if cursor.rowcount == 0:
+        return None
+    
+    connection.commit()
+    connection.close()
+    
+    return {
+        "id": goal_id,
+        "goal_type": goal_type,
+        "target_weight": target_weight,
+        "daily_calorie_goal": daily_calorie_goal,
+        "daily_protein_goal": daily_protein_goal
+    }
+
         
 def update_body_weight():
     connection = get_connection()

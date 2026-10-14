@@ -1,5 +1,5 @@
-from fastapi import APIRouter, status 
-from goals import view_goals_in_database
+from fastapi import APIRouter, status, HTTPException
+from goals import view_goals_in_database, update_goal_in_database
 from app.services.goal_service import set_daily_goals
 from app.models import Goals, GoalResponse
 
@@ -28,3 +28,17 @@ def set_goals(goals: Goals):
         "daily_calorie_goal": goals.daily_calorie_goal,
         "daily_protein_goal": goals.daily_protein_goal
     }
+
+@router.put("/{goal_id}", response_description= "Update goals", response_model=GoalResponse)
+def update_goal(goal_id: int , goals: Goals):
+    result = update_goal_in_database(goal_id, goals.goal_type, goals.target_weight, goals.daily_calorie_goal, goals.daily_protein_goal)
+    if result is None:
+        raise HTTPException(status_code=404, detail="Food entry not found.")
+    
+    return GoalResponse(
+        "id": goal_id,
+        "goal_type": goal.goal_type,
+        "target_weight": target_weight,
+        "daily_calorie_goal": daily_calorie_goal,
+        "daily_protein_goal": daily_protein_goal
+    )
