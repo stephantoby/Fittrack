@@ -199,6 +199,27 @@ def update_body_weight():
     
     input(f"\n Weight history has been updated. Press Enter to return to the menu...")
 
+def delete_goal_in_database(goal_id):
+    connection = get_connection()
+    cursor = connection.cursor()
+    
+    cursor.execute('''
+    DELETE 
+    FROM goals
+    WHERE id = ?
+    ''', (goal_id,))
+    
+    if cursor.rowcount == 0:
+        return None
+    
+    connection.commit()
+    connection.close()
+    
+    return {
+        "message": f"Food entry with ID {goal_id} has been deleted."
+    }
+    
+
 
 def delete_body_weight():
     connection = get_connection()
