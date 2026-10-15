@@ -43,6 +43,25 @@ def set_daily_goals():
     print("\n")
     print("Successfully Set")
 
+def set_body_weight_in_database(current_weight, date):
+    connection = get_connection()
+    cursor = connection.cursor()
+    
+    cursor.execute('''
+    INSERT INTO body_weights (current_weight, date)
+    VALUES (?,?)
+    ''', (current_weight, date))
+
+    if cursor.rowcount == 0:
+        return None
+    
+    body_weight_id = cursor.lastrowid
+    
+    connection.commit()
+    connection.close()
+
+    return body_weight_id
+
 def log_body_weight():
     current_weight = get_valid_weight("Enter your current body weight(kg): ")
     date = get_valid_date("Enter valid date (YYYY-MM-DD): ")
@@ -177,7 +196,28 @@ def update_goal_in_database(goal_id, goal_type, target_weight, daily_calorie_goa
         }
     finally:
         connection.close()
-        
+
+def update_body_weight_in_database(body_weight_id, current_weight, date):
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    cursor.execute('''
+        UPDATE body_weights 
+        SET current_weight = ?, 
+            date = ?
+        WHERE id = ?
+    ''', (current_weight, date, body_weight_id))
+   
+    connection.commit()
+    connection.close()
+    
+    return {
+    "id": body_weight_id,
+    "current_weight": current_weight,
+    "date": date
+    }
+   
+    
 def update_body_weight():
     connection = get_connection()
     cursor = connection.cursor()

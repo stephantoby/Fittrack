@@ -1,6 +1,7 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, status, HTTPException
 from app.models import Body_weight, Body_weight_response
-from goals import view_body_weight_in_database
+from goals import view_body_weight_in_database, update_body_weight_in_database
+from app.services.body_weight_service import set_body_weight
 
 router = APIRouter(prefix="/body_weight", tags=["Body_weight"])
 
@@ -16,30 +17,26 @@ def get_body_weight():
         
         return result
 
-@router.post("/", status_code = status.HTTP_201_CREATED, response_model =GoalResponse)
-def set_goals(goals: Goals):
-    goal_id = set_daily_goals(goals)
+@router.post("/", status_code = status.HTTP_201_CREATED, response_model =Body_weight_response)
+def set_weight(body_weight: Body_weight):
+    body_weight_id = set_body_weight(body_weight)
 
     return {
-        "id": goal_id,
-        "goal_type": goals.goal_type,
-        "target_weight": goals.target_weight,
-        "daily_calorie_goal": goals.daily_calorie_goal,
-        "daily_protein_goal": goals.daily_protein_goal
+        "id": body_weight_id,
+        "goal_type": body_weight.current_weight,
+        "target_weight": body_weight.date
     }
 
-@router.put("/{goal_id}", response_description= "Update goals", response_model=GoalResponse)
-def update_goal(goal_id: int , goals: Goals):
-    result = update_goal_in_database(goal_id, goals.goal_type, goals.target_weight, goals.daily_calorie_goal, goals.daily_protein_goal)
+@router.put("/{body_weight_id}", response_description= "Update body weight", response_model=Body_weight_response)
+def update_goal(body_weight_id: int , body_weight: Body_weight):
+    result = update_body_weight_in_database(body_weight_id, body_weight.current_weight, body_weight.date)
     if result is None:
         raise HTTPException(status_code=404, detail="goal entry not found.")
     
-    return GoalResponse(
-        id= goal_id,
-        goal_type= goals.goal_type,
-        target_weight= goals.target_weight,
-        daily_calorie_goal= goals.daily_calorie_goal,
-        daily_protein_goal= goals.daily_protein_goal
+    return Body_weight_response(
+        id= body_weight_id,
+        current_weight= body_weight.current_weight,
+        date= body_weight.date
     )
 
 @router.delete("/{goal_id}",response_description= "Deleted goal entries")
