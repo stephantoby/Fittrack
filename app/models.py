@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from datetime import date
 
 class Food(BaseModel):
     name: str
@@ -36,3 +37,12 @@ class GoalResponse(BaseModel):
     target_weight: float
     daily_calorie_goal: float
     daily_protein_goal: float
+
+class Body_weight(BaseModel):
+    current_weight: float
+    date: date
+
+class Body_weight_response(BaseModel):
+    id: int
+    current_weight: float
+    date: date

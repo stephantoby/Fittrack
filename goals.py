@@ -92,6 +92,22 @@ def view_goals():
         print(f"Daily Protein Goal: {goal[1]} g")
         print("-----------------------------")
 
+def view_body_weight_in_database():
+    connection = get_connection()
+    cursor = connection.cursor()
+    
+    cursor.execute('''
+    SELECT current_weight, date
+    FROM body_weights
+    ''')
+    
+    view_weight = cursor.fetchall()
+    
+    connection.close()
+
+    return view_weight
+
+
 def view_body_weight():
     connection = get_connection()
     cursor = connection.cursor()
@@ -101,9 +117,8 @@ def view_body_weight():
     FROM body_weights
   ''')
 
-    view_weight = cursor.fetchall()
+    view_weight = view_body_weight_in_database
 
-    connection.close()
 
     if not view_weight:
         print("\nNo weight has been set yet.")
@@ -201,25 +216,24 @@ def update_body_weight():
 
 def delete_goal_in_database(goal_id):
     connection = get_connection()
-    cursor = connection.cursor()
+    try:
+        cursor = connection.cursor()
     
-    cursor.execute('''
-    DELETE 
-    FROM goals
-    WHERE id = ?
-    ''', (goal_id,))
+        cursor.execute('''
+        DELETE 
+        FROM goals
+        WHERE id = ?
+        ''', (goal_id,))
     
-    if cursor.rowcount == 0:
-        return None
+        if cursor.rowcount == 0:
+            return None
     
-    connection.commit()
-    connection.close()
-    
-    return {
-        "message": f"Food entry with ID {goal_id} has been deleted."
-    }
-    
-
+        connection.commit()  
+        return {
+            "message": f"Goal entry with ID {goal_id} has been deleted."
+            }
+    finally:
+        connection.close()
 
 def delete_body_weight():
     connection = get_connection()
