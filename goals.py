@@ -199,23 +199,28 @@ def update_goal_in_database(goal_id, goal_type, target_weight, daily_calorie_goa
 
 def update_body_weight_in_database(body_weight_id, current_weight, date):
     connection = get_connection()
-    cursor = connection.cursor()
+    try:
+        cursor = connection.cursor()
 
-    cursor.execute('''
-        UPDATE body_weights 
-        SET current_weight = ?, 
-            date = ?
-        WHERE id = ?
-    ''', (current_weight, date, body_weight_id))
+        cursor.execute('''
+            UPDATE body_weights 
+            SET current_weight = ?, 
+                date = ?
+            WHERE id = ?
+        ''', (current_weight, date, body_weight_id))
+
+        if cursor.rowcount == 0:
+            return None
    
-    connection.commit()
-    connection.close()
+        connection.commit()
     
-    return {
-    "id": body_weight_id,
-    "current_weight": current_weight,
-    "date": date
-    }
+        return {
+        "id": body_weight_id,
+        "current_weight": current_weight,
+        "date": date
+        }
+    finally:
+        connection.close()
    
 def update_body_weight():
     connection = get_connection()
@@ -283,6 +288,9 @@ def delete_body_weight_in_database(body_weight_id: int):
         DELETE FROM body_weights 
         WHERE id = ?  
         ''', (body_weight_id,))
+
+        if cursor.rowcount == 0:
+            return None
     
         connection.commit()
         return{

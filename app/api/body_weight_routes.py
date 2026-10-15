@@ -23,15 +23,15 @@ def set_weight(body_weight: Body_weight):
 
     return {
         "id": body_weight_id,
-        "goal_type": body_weight.current_weight,
-        "target_weight": body_weight.date
-    }
+        "current_weight": body_weight.current_weight,
+        "date": body_weight.date
+        }
 
 @router.put("/{body_weight_id}", response_description= "Update body weight", response_model=Body_weight_response)
 def update_goal(body_weight_id: int , body_weight: Body_weight):
     result = update_body_weight_in_database(body_weight_id, body_weight.current_weight, body_weight.date)
     if result is None:
-        raise HTTPException(status_code=404, detail="goal entry not found.")
+        raise HTTPException(status_code=404, detail="Weight not found.")
     
     return Body_weight_response(
         id= body_weight_id,
