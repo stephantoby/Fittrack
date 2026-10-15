@@ -1,6 +1,6 @@
 from fastapi import APIRouter, status, HTTPException
 from app.models import Body_weight, Body_weight_response
-from goals import view_body_weight_in_database, update_body_weight_in_database
+from goals import view_body_weight_in_database, update_body_weight_in_database, delete_body_weight_in_database
 from app.services.body_weight_service import set_body_weight
 
 router = APIRouter(prefix="/body_weight", tags=["Body_weight"])
@@ -39,10 +39,10 @@ def update_goal(body_weight_id: int , body_weight: Body_weight):
         date= body_weight.date
     )
 
-@router.delete("/{goal_id}",response_description= "Deleted goal entries")
-def delete_goals(goal_id: int):
-    result = delete_goal_in_database(goal_id)
+@router.delete("/{body_weight_id}",response_description= "Deleted weight")
+def delete_goals(body_weight_id: int):
+    result = delete_body_weight_in_database(body_weight_id)
     if result is None:
-        raise HTTPException(status_code=404, detail="Goal entry not found.")
+        raise HTTPException(status_code=404, detail="Weight not found.")
     return result
 

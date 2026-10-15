@@ -217,7 +217,6 @@ def update_body_weight_in_database(body_weight_id, current_weight, date):
     "date": date
     }
    
-    
 def update_body_weight():
     connection = get_connection()
     cursor = connection.cursor()
@@ -274,6 +273,24 @@ def delete_goal_in_database(goal_id):
             }
     finally:
         connection.close()
+
+def delete_body_weight_in_database(body_weight_id: int):
+    connection = get_connection()
+    try:
+        cursor = connection.cursor()
+
+        cursor.execute('''
+        DELETE FROM body_weights 
+        WHERE id = ?  
+        ''', (body_weight_id,))
+    
+        connection.commit()
+        return{
+            "message": f"Goal entry with ID {body_weight_id} has been deleted."
+            }
+    finally:
+        connection.close()
+
 
 def delete_body_weight():
     connection = get_connection()
