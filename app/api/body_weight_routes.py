@@ -14,8 +14,8 @@ def get_body_weight():
                     "date": weight[1]
                     }
         result.append(weight_dic)
-        
-        return result
+
+    return result
 
 @router.post("/", status_code = status.HTTP_201_CREATED, response_model =Body_weight_response)
 def set_weight(body_weight: Body_weight):
@@ -45,4 +45,3 @@ def delete_goals(body_weight_id: int):
     if result is None:
         raise HTTPException(status_code=404, detail="Weight not found.")
     return result
-

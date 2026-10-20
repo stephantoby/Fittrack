@@ -78,7 +78,7 @@ def log_body_weight():
     print("\n")
     print("Successfully Set") 
 
-def view_goals_in_database():
+def get_goals_in_database():
     connection = get_connection()
     cursor = connection.cursor()
 
@@ -95,7 +95,7 @@ def view_goals_in_database():
 
 def view_goals():
 
-    daily_goals = view_goals_in_database()
+    daily_goals = get_goals_in_database()
 
     if not daily_goals:
         print("\nNo daily goals have been set yet.")

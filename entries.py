@@ -198,6 +198,7 @@ def delete_foodentry_in_database(entry_id):
     ''', (entry_id,))
 
     if cursor.rowcount == 0:
+        connection.close()
         return None
 
     connection.commit()

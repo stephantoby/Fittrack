@@ -1,7 +1,10 @@
 import sqlite3
 
+DATABASE_PATH = "fittrack.db"
+
 def get_connection():
-    connection = sqlite3.connect("fittrack.db")
+    connection = sqlite3.connect(DATABASE_PATH)
+    connection.execute("PRAGMA foreign_keys = ON")
     return connection
 
 connection = get_connection()

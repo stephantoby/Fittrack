@@ -1,5 +1,5 @@
 from app.models import FoodEntry
-from entries import get_food_by_id, log_food_entry_to_database, calculate_entry_nutrition, get_foodentry_by_id, update_food_entry_in_database
+from entries import get_food_by_id, log_food_entry_to_database, calculate_entry_nutrition, update_food_entry_in_database
 
 def create_food_entry(food_entry:FoodEntry):
     food = get_food_by_id(food_entry.food_id)
@@ -18,7 +18,7 @@ def create_food_entry(food_entry:FoodEntry):
     return (food_entry_id, actual_calories, actual_protein)
 
 def update_food_entry(entry_id, food_entry:FoodEntry):
-    food = get_foodentry_by_id(food_entry.food_id)
+    food = get_food_by_id(food_entry.food_id)
     if not food:
         raise ValueError(f"Food with ID {food_entry.food_id} not found.")
     

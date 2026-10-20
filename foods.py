@@ -12,6 +12,7 @@ def add_food_to_database(food_name, calories, protein, serving_size):
     ''', (food_name, calories, protein, serving_size))
     
     if cursor.rowcount == 0:
+        connection.close()
         return None
 
     food_id = cursor.lastrowid
@@ -130,6 +131,7 @@ def update_food_to_database(food_id, new_name, new_calories, new_protein, new_se
     ''', (new_name, new_calories, new_protein, new_serving, food_id))
 
     if cursor.rowcount == 0:
+        connection.close()
         return None
 
     connection.commit()
@@ -186,6 +188,7 @@ def delete_food_from_database(food_id):
     ''', (food_id,))
 
     if cursor.rowcount == 0:
+        connection.close()
         return None
 
     connection.commit()
