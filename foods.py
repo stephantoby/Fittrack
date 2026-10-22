@@ -63,7 +63,7 @@ def get_foods_in_database():
             ''')
             
             foods = cursor.fetchall()
-            
+
     return foods
 
 def view_foods_in_database():
@@ -148,6 +148,27 @@ def display_food_choices(food_list):
             return food_to_update
 
 def update_food_to_database(food_id, new_name, new_calories, new_protein, new_serving):
+    with get_connection_pg() as connection:
+        with connection.cursor() as cursor:
+            cursor.execute('''
+            UPDATE foods
+            SET name = %s, calories = %s, protein = %s, serving_size = %s
+            WHERE id = %s
+            ''', (new_name, new_calories, new_protein, new_serving, food_id))
+
+            if cursor.rowcount == 0:
+                return None
+
+            return {
+                    "id": food_id,
+                    "name": new_name,
+                    "calories": new_calories,
+                    "protein": new_protein,
+                    "serving_size": new_serving
+                    }
+
+            
+def update_food_to_database_sql(food_id, new_name, new_calories, new_protein, new_serving):
     connection = get_connection()
     cursor = connection.cursor()
 
@@ -206,6 +227,23 @@ def update_food():
     update_food_to_database(food_to_update[0], food_to_update[1], new_calories, new_protein, new_serving)
 
 def delete_food_from_database(food_id):
+    with get_connection_pg() as connection:
+        with connection.cursor() as cursor:
+
+            cursor.execute('''
+            DELETE FROM foods 
+            WHERE id = %s
+            ''', (food_id,))
+            
+            if cursor.rowcount == 0:
+                return None
+
+            return {
+                    "message": f"Food entry with ID {food_id} has been deleted."
+                    }
+
+
+def delete_food_from_database_sql(food_id):
     connection = get_connection()
     cursor = connection.cursor()
 
