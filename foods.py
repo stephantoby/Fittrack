@@ -1,8 +1,24 @@
 from validation import get_valid_calories, get_valid_protein, get_valid_serving
-from db import get_connection
+from db import get_connection, get_connection_pg
 #from pydantic import BaseModel
 
 def add_food_to_database(food_name, calories, protein, serving_size):
+    with get_connection_pg() as connection:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                """
+                INSERT INTO foods (name, calories, protein, serving_size)
+                VALUES (%s, %s, %s, %s)
+                RETURNING id
+                """,
+                (food_name, calories, protein, serving_size)
+            )
+
+            food_id = cursor.fetchone()[0]
+
+    return food_id
+
+def add_food_to_database_sql(food_name, calories, protein, serving_size):
     connection = get_connection()
     cursor = connection.cursor()
     
