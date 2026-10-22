@@ -1,5 +1,5 @@
 from fastapi import status, HTTPException, APIRouter
-from foods import view_foods_in_database, add_food_to_database, update_food_to_database, delete_food_from_database
+from foods import view_foods_in_database, add_food_to_database, update_food_to_database, delete_food_from_database, get_foods_in_database
 from app.services.food_service import create_food
 from app.models import Food, FoodResponse
 
@@ -8,7 +8,7 @@ router = APIRouter(prefix="/foods", tags=["Foods"])
 
 @router.get("/", response_description= "List all foods", response_model= list[FoodResponse])
 def view_food():
-    foods = view_foods_in_database()
+    foods = get_foods_in_database()
 
     result = []
     for food in foods:

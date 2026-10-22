@@ -55,6 +55,17 @@ def add_food():
     add_food_to_database(food_name, calories, protein, serving_size)
     print("\nSuccessfully added food to the database.")
 
+def get_foods_in_database():
+    with get_connection_pg() as connection:
+        with connection.cursor() as cursor:
+            cursor.execute('''
+            SELECT * FROM foods
+            ''')
+            
+            foods = cursor.fetchall()
+            
+    return foods
+
 def view_foods_in_database():
     connection = get_connection()
     cursor = connection.cursor()
