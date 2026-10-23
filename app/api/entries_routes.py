@@ -38,7 +38,7 @@ def update_entry(entry_id: int, food_entry: FoodEntry):
     result = update_food_entry(entry_id, food_entry)
 
     if result is None:
-            raise HTTPException(status_code=404, detail="Food entry not found.")
+        raise HTTPException(status_code=404, detail="Food entry not found.")
     
     return FoodEntryResponse(
         id=result["id"],
