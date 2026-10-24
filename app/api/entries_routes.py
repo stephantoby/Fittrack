@@ -1,7 +1,7 @@
 from fastapi import APIRouter, status, HTTPException
 from entries import view_foods_in_database, delete_foodentry_in_database
 from app.models import FoodEntry, FoodEntryResponse
-from app.services.entries_services import create_food_entry, update_food_entry
+from app.services.entries_services import create_food_entry, update_food_entry, calculate_totals_service
 
 router = APIRouter(prefix="/entries", tags=["Entries"])
 
@@ -19,6 +19,11 @@ def view_food():
         result.append(food_dic)
         
     return result
+
+@router.get("/totals", response_description= "Total calories and protein")
+def get_entry_totals():
+    totals = calculate_totals_service()
+    return totals
 
 @router.post("/", status_code = status.HTTP_201_CREATED, response_model =FoodEntryResponse)
 def log_food_entry(food_entry: FoodEntry):

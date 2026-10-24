@@ -1,5 +1,6 @@
 from db import get_connection_pg
 
+
 def log_food_entry_to_database(food_id, amount_grams, calories, protein):
     with get_connection_pg() as connection:
         with connection.cursor() as cursor:
@@ -18,7 +19,7 @@ def get_food_by_id(food_id):
             cursor.execute('''
             SELECT id, name, calories, protein, serving_size
             FROM foods
-            WHERE id = %a
+            WHERE id = %s
         ''', (food_id,))
 
             food = cursor.fetchone()
@@ -91,9 +92,11 @@ def calculate_totals_in_db():
     with get_connection_pg() as connection:
         with connection.cursor() as cursor:
             cursor.execute('''
-            SELECT SUM(calories), SUM(protein)
+            SELECT  
+                COALESCE(SUM(calories), 0), 
+                COALESCE(SUM(protein), 0)
             FROM food_entries
         ''')
-            result = cursor.fetchall()
+            result = cursor.fetchone()
 
     return result
