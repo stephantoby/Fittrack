@@ -1,6 +1,7 @@
 from fastapi import HTTPException
 from app.models import FoodEntry
-from entries import get_food_by_id, log_food_entry_to_database, calculate_entry_nutrition, update_food_entry_in_database
+from entries import get_food_by_id, log_food_entry_to_database, update_food_entry_in_database
+from calculations import calculate_entry_nutrition
 
 def create_food_entry(food_entry:FoodEntry):
     food = get_food_by_id(food_entry.food_id)
@@ -37,4 +38,3 @@ def update_food_entry(entry_id, food_entry:FoodEntry):
     "calories": actual_calories,
     "protein": actual_protein
 }
-

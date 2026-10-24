@@ -1,22 +1,10 @@
-from validation import get_valid_serving
-from db import get_connection
+from entries import calculate_totals_in_db
 
 def calculate_totals():
     total_calories = 0
     total_protein = 0
 
-    connection = get_connection()
-    cursor = connection.cursor()
-
-    cursor.execute('''
-        SELECT SUM(calories), SUM(protein)
-        FROM food_entries
-    ''')
-
-
-    result = cursor.fetchall()
-
-    connection.close()
+    result = calculate_totals_in_db()
 
     row = result[0]
 
@@ -28,11 +16,6 @@ def calculate_totals():
          total_protein = 0 
 
     return (total_calories, total_protein)
-
-
-def get_amount(food_to_log):
-        amount = get_valid_serving(f"\nHow many grams of {food_to_log[1]} did you eat? ")
-        return amount
 
 def calculate_entry_nutrition(food_to_log, amount):
     calories = (food_to_log[2] * amount ) / food_to_log[4]

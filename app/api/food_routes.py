@@ -1,5 +1,5 @@
 from fastapi import status, HTTPException, APIRouter
-from foods import view_foods_in_database, add_food_to_database, update_food_to_database, delete_food_from_database, get_foods_in_database
+from foods import get_foods_in_database, add_food_to_database, update_food_to_database, delete_food_from_database, get_foods_in_database
 from app.services.food_service import create_food
 from app.models import Food, FoodResponse
 
