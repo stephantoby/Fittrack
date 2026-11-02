@@ -33,6 +33,14 @@ function FoodLibrary(){
         <div>
             <h2>Food library</h2>
             <p>Foods loaded: {foods.length}</p>
+            {foods.map((food) => (
+                <div key={food.id}>
+                    <h3>{food.name}</h3>
+                    <p>Calories: {food.calories}</p>
+                    <p>Protein: {food.protein}</p>
+                    <p>Serving Size: {food.serving_size}</p>
+                </div>
+            ))}
         </div>
     );
 }
