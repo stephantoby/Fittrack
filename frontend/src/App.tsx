@@ -2,6 +2,7 @@ import './App.css'
 import NutritionCard from './NutritionCard';
 import { useState } from 'react';
 import FoodLibrary from './FoodLibrary';
+import AddFood from './AddFood';
 
 function App() {
   const [calories, setCalories] = useState(0);
@@ -38,6 +39,7 @@ function App() {
           onChange={(event) => setAmount(event.target.value)}
         />
         <p>{error}</p>
+        <AddFood/>
     </>
   );
 }
