@@ -1,48 +1,60 @@
 import { useState, useEffect } from "react";
 
 type Food = {
-    id: number;
-    name: string;
-    calories: number;
-    protein: number;
-    serving_size: number;
+  id: number;
+  name: string;
+  calories: number;
+  protein: number;
+  serving_size: number;
 };
 
-function FoodLibrary(){
-    const [foods, setFoods] = useState<Food[]>([]);
-    useEffect(() => {
-        async function loadFoods(){
-            try{
-                const response = await fetch('http://127.0.0.1:8000/foods/');
+function FoodLibrary() {
+  const [foods, setFoods] = useState<Food[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
-                if (!response.ok){
-                    throw new Error('Failed to fetch foods');
-                }
-                const data: Food[] = await response.json();
+  useEffect(() => {
+    async function loadFoods() {
+      setIsLoading(true);
+      try {
+        const response = await fetch("http://127.0.0.1:8000/foods/");
 
-                setFoods(data);
-            }catch (error){
-                console.error('Error loading foods', error);
-            }
+        if (!response.ok) {
+          throw new Error("Failed to fetch foods");
         }
-        loadFoods();
+        const data: Food[] = await response.json();
 
-    },[]);
+        setFoods(data);
+      } catch (err) {
+        console.error("Error loading foods", err);
+        setError("Could not load foods.");
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    loadFoods();
+  }, []);
 
-    return(
+  return (
+    <div>
+      <h2>Food library</h2>
+      {error && <p>{error}</p>}
+      {isLoading && <p>Loading foods...</p>}
+      {!isLoading && !error && (
         <div>
-            <h2>Food library</h2>
-            <p>Foods loaded: {foods.length}</p>
-            {foods.map((food) => (
-                <div key={food.id}>
-                    <h3>{food.name}</h3>
-                    <p>Calories: {food.calories}</p>
-                    <p>Protein: {food.protein}</p>
-                    <p>Serving Size: {food.serving_size}</p>
-                </div>
-            ))}
+          <p>Foods loaded: {foods.length}</p>
+          {foods.map((food) => (
+            <div key={food.id}>
+              <h3>{food.name}</h3>
+              <p>Calories: {food.calories}</p>
+              <p>Protein: {food.protein}</p>
+              <p>Serving Size: {food.serving_size} g</p>
+            </div>
+          ))}
         </div>
-    );
+      )}
+    </div>
+  );
 }
 
-export default FoodLibrary
+export default FoodLibrary;
