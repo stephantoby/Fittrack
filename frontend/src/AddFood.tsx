@@ -7,10 +7,12 @@ export default function AddFood({onFoodAdded}: {onFoodAdded: (newFood: Food) => 
     const [protein, setProtein] = useState(0);
     const [serving_size, setServingSize] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
+    const [submitError, setSubmitError] = useState<string | null>(null);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsLoading(true);
+        setSubmitError(null);
         const newFood: NewFood = {
             name,
             calories,
@@ -39,8 +41,9 @@ export default function AddFood({onFoodAdded}: {onFoodAdded: (newFood: Food) => 
             setProtein(0);
             setServingSize(0);
 
-        } catch (error) {
-            console.error('Error adding food:', error);
+        } catch (err) {
+            console.error('Error adding food:', err);
+            setSubmitError("Could not add food.");
         } finally {
             setIsLoading(false);
         }
@@ -79,6 +82,7 @@ export default function AddFood({onFoodAdded}: {onFoodAdded: (newFood: Food) => 
                 required
                 />
             </div>
+            {submitError && <p>{submitError}</p>}
             <button type="submit" disabled={isLoading}>
                 {isLoading ? "Adding..." : "Add Food"}
             </button>

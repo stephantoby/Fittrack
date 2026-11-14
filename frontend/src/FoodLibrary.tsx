@@ -7,6 +7,7 @@ function FoodLibrary() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
+
   useEffect(() => {
     async function loadFoods() {
       setIsLoading(true);
