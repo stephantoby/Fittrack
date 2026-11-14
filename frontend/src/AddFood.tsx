@@ -1,13 +1,7 @@
 import {useState} from 'react';
+import type { NewFood, Food } from "./types";
 
-type Food = {
-    name: string;
-    calories: number;
-    protein: number;
-    serving_size: number;
-}
-
-export default function AddFood(){
+export default function AddFood({onFoodAdded}: {onFoodAdded: (newFood: Food) => void}) {
     const [name, setName] = useState("");
     const [calories, setCalories] = useState(0);
     const [protein, setProtein] = useState(0);
@@ -17,7 +11,7 @@ export default function AddFood(){
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsLoading(true);
-        const newFood: Food = {
+        const newFood: NewFood = {
             name,
             calories,
             protein,
@@ -38,6 +32,7 @@ export default function AddFood(){
             }
             const data = await response.json();
             console.log("Food added successfully:", data);
+            onFoodAdded(data); // Call the callback function to update the food list
 
             setName("");
             setCalories(0);
@@ -47,7 +42,6 @@ export default function AddFood(){
         } catch (error) {
             console.error('Error adding food:', error);
         } finally {
-            window.location.reload();
             setIsLoading(false);
         }
     };

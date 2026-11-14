@@ -1,12 +1,6 @@
 import { useState, useEffect } from "react";
-
-type Food = {
-  id: number;
-  name: string;
-  calories: number;
-  protein: number;
-  serving_size: number;
-};
+import AddFood from "./AddFood";
+import type { Food } from "./types";
 
 function FoodLibrary() {
   const [foods, setFoods] = useState<Food[]>([]);
@@ -35,9 +29,13 @@ function FoodLibrary() {
     loadFoods();
   }, []);
 
+  function handleFoodAdded(newFood: Food){
+    setFoods((prevFoods) => [...prevFoods, newFood]);
+  }
   return (
     <div>
       <h2>Food library</h2>
+      <AddFood onFoodAdded={(newFood) => handleFoodAdded(newFood)} />
       {error && <p>{error}</p>}
       {isLoading && <p>Loading foods...</p>}
       {!isLoading && !error && (
